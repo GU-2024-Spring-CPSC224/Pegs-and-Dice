@@ -52,13 +52,20 @@ public class GUI {
 
     private JPanel genBoardPanel() {
         JPanel newPanel = new JPanel();
-        newPanel.setLayout(new GridLayout(5, 12));
+        //Still need to fix of course
+        newPanel.setLayout(new GridLayout(6, 13, 35, 35));
 
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 12; col++) {
-                JButton button = new JButton(" ");
-                button.setPreferredSize(new Dimension(5, 5));
+        for (int row = 0; row < 6; row++) {
+            for (int col = 0; col < 13; col++) {
+                JButton button = new JButton(".");
+                button.setPreferredSize(new Dimension(1, 1));
+
                 newPanel.add(button);
+
+                //Hides the bottom left corner button
+                if (row == 5 && col == 0) {
+                    button.setVisible(false);
+                }
             }
         }
 
