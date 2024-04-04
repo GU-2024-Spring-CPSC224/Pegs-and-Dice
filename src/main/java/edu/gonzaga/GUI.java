@@ -27,8 +27,7 @@ public class GUI {
     //Board, player/round info, dice display, and checkboxes
     JPanel boardPanel = new JPanel();
     JPanel playerInfoPanel = new JPanel();
-    JPanel diceControlPanel = new JPanel();
-    JPanel meldAndRollControlPanel = new JPanel();
+    JPanel diceMeldAndRollControlPanel = new JPanel();
 
     void setupGUI() {
         //Main Window
@@ -36,10 +35,18 @@ public class GUI {
         this.mainWindowFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.mainWindowFrame.setLocation(100, 100);
 
+        //Adds the main board to the GUI
+        this.boardPanel = genBoardPanel();
+
+        //Adds the player information and round count to the GUI
+        this.playerInfoPanel = genPlayerInfoPanel();
+
+        //Adds the dice, meld, and buttons to the GUI
+        this.diceMeldAndRollControlPanel = genMeldAndRollControlPanel();
+
         mainWindowFrame.getContentPane().add(BorderLayout.NORTH, this.playerInfoPanel);
         mainWindowFrame.getContentPane().add(BorderLayout.CENTER, this.boardPanel);
-        //mainWindowFrame.getContentPane().add(BorderLayout.CENTER, this.diceControlPanel);
-        mainWindowFrame.getContentPane().add(BorderLayout.SOUTH, this.meldAndRollControlPanel);
+        mainWindowFrame.getContentPane().add(BorderLayout.SOUTH, this.diceMeldAndRollControlPanel);
         mainWindowFrame.pack();
     }
 
@@ -47,22 +54,18 @@ public class GUI {
         JPanel newPanel = new JPanel();
         newPanel.setLayout(new GridLayout(5, 12));
 
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 12; col++) {
+                JButton button = new JButton(" ");
+                button.setPreferredSize(new Dimension(5, 5));
+                newPanel.add(button);
+            }
+        }
+
         return newPanel;
     }
 
     private JPanel genPlayerInfoPanel() {
-        JPanel newPanel = new JPanel();
-
-        /*
-         * This is where you would need to add things to the panel
-         * "newPanel.add(button or text)"
-         * 
-         */
-
-        return newPanel;
-    }
-
-    private JPanel genDiceControlPanel() {
         JPanel newPanel = new JPanel();
 
         /*
