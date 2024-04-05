@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.Flow;
 
-//This is a test comment for pull requests.
 public class GUI {
     JFrame mainWindowFrame;
     JPanel controlPanel;
