@@ -57,7 +57,24 @@ public class GUI {
     }
 
     private JPanel genBoardPanel() {
-        JPanel newPanel = new JPanel();
+        //Draws the dividors between the pegs and the labels
+        JPanel newPanel = new JPanel() {
+            @Override
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+
+                // Setting color and thickness of the lines
+                g2d.setColor(Color.GRAY.darker().darker());
+                g2d.setStroke(new BasicStroke(20));
+
+                // Drawing the first vertical line above the numbered columns
+                g2d.drawLine(140, 0, 140, Math.min(getHeight(), getHeight() - 190));
+
+                // Drawing the horizontal line across the bottom of the numbered rows
+                g2d.drawLine(140, getHeight() - 190, getWidth(), getHeight() - 190);
+            }
+        };
         
         //Setting up the grid and border of the board
         newPanel.setLayout(new GridLayout(7, 13, 10, 10));
@@ -69,12 +86,10 @@ public class GUI {
                 JButton button = new JButton(".");
 
                 //Setting up the button settings and size of text
-                button.setPreferredSize(new Dimension(10, 10));
                 button.setBorderPainted(false);
                 button.setContentAreaFilled(false);
-                button.setFont(new Font("Montserrat", Font.PLAIN, 40));
-                button.setHorizontalAlignment(SwingConstants.CENTER);
-                button.setForeground(Color.WHITE);
+                button.setFont(new Font("Montserrat", Font.PLAIN, 60));
+                button.setForeground(Color.BLACK);
                 button.setFocusPainted(false);
 
                 newPanel.add(button);
@@ -82,11 +97,13 @@ public class GUI {
                 //Setting the column numbers 1 - 5
                 if (col == 0) {
                     button.setText(String.valueOf(--colTextValue));
+                    button.setForeground(Color.WHITE);
                 }
 
                 //Setting the row numbers 1 - 12
                 if (row == 6) {
                     button.setText(String.valueOf(++rowTextValue));
+                    button.setForeground(Color.WHITE);
                 }
 
                 //Hides the bottom left corner buttons
@@ -96,19 +113,23 @@ public class GUI {
             }
         }
 
-        //Sets the background to a crisp dark green
-        newPanel.setBackground(Color.GREEN.darker().darker().darker().darker());
+        //Sets the background to a crisp red
+        newPanel.setBackground(Color.RED.darker().darker().darker());
 
         return newPanel;
     }
 
     private JPanel genPlayerInfoPanel() {
         JPanel newPanel = new JPanel();
+        JPanel playerNamePanel = new JPanel();
 
         //Setting up dimensions, color, and layout
-        newPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        newPanel.setLayout(new BorderLayout(-216, 0));
         newPanel.setPreferredSize(new Dimension(50, 50));
-        newPanel.setBackground(Color.RED.darker().darker().darker().darker());
+        newPanel.setBackground(Color.GRAY.darker().darker());
+
+        //Setting up the playerName player
+        playerNamePanel.setBackground(Color.GRAY.darker().darker());
 
         //Setting up the round counter text holder
         JLabel roundCountLabel = new JLabel("    Round:");
@@ -117,33 +138,40 @@ public class GUI {
         roundCountTextField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
         roundCountTextField.setColumns(3);
         roundCountTextField.setFont(new Font("Montserrat", Font.PLAIN, 25));
-        roundCountTextField.setBackground(Color.GREEN.darker().darker().darker().darker());
+        roundCountTextField.setBackground(Color.GRAY.darker().darker());
         roundCountTextField.setHorizontalAlignment(SwingConstants.CENTER);
         roundCountTextField.setEditable(false);
+        
+        //Adding the elements to the panel to eventually add to the frame
+        JPanel roundPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        roundPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
+        roundPanel.add(roundCountLabel);
+        roundPanel.add(roundCountTextField);
 
-        //Adds space between elements
-        JLabel addLazySpace = new JLabel("                                                                                                                                                                                                               ");
+        //Adds the panel to the left of the screen
+        newPanel.add(roundPanel, BorderLayout.WEST);
+
+        playerNamePanel = genPlayerNamePanel();
+
+        newPanel.add(playerNamePanel, BorderLayout.CENTER);
+
+        return newPanel;
+    }
+
+    private JPanel genPlayerNamePanel() {
+        JPanel newPanel = new JPanel();
+        newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
         //Setting up the player name text holder
-        JLabel playerNameLabel = new JLabel();
-        playerNameLabel.setFont(new Font("Montserrat", Font.PLAIN, 30));
-        playerNameLabel.setForeground(Color.WHITE);
         playerNameTextField.setColumns(10);
         playerNameTextField.setFont(new Font("Montserrat", Font.PLAIN, 25));
         playerNameTextField.setForeground(Color.WHITE);
         playerNameTextField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
-        playerNameTextField.setBackground(Color.GREEN.darker().darker().darker().darker());
+        playerNameTextField.setBackground(Color.GRAY.darker().darker());
         playerNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
-        
-        //Adding the elements to the panel to eventually add to the frame
-        newPanel.add(roundCountLabel);
-        newPanel.add(roundCountTextField);
 
-        newPanel.add(addLazySpace);
-
-        newPanel.add(playerNameLabel);
         newPanel.add(playerNameTextField);
-     
+        
         return newPanel;
     }
 
@@ -153,7 +181,7 @@ public class GUI {
         //Setting up dimensions, color, and layout
         newPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         newPanel.setPreferredSize(new Dimension(35, 35));
-        newPanel.setBackground(Color.RED.darker().darker().darker().darker());
+        newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
         return newPanel;
     }
@@ -163,7 +191,7 @@ public class GUI {
 
         newPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         newPanel.setPreferredSize(new Dimension(220, 220));
-        newPanel.setBackground(Color.RED.darker().darker().darker().darker());
+        newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
         newPanel.add(makeDiceandMeldWidget());
         newPanel.add(new Panel());
@@ -175,10 +203,32 @@ public class GUI {
     private JPanel bankRollEndTurnControlPanel() {
         JPanel newPanel = new JPanel();
 
+        //Setting up the panel layout, size, and color
         newPanel.setLayout(new GridLayout(1, 3, 15, 15));
         newPanel.setPreferredSize(new Dimension(300, 50));
-        newPanel.setBackground(Color.RED.darker().darker().darker().darker());
+        newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
+        //Changing button color
+        this.bankButton.setBackground(Color.GRAY.darker());
+        this.rollButton.setBackground(Color.GRAY.darker());
+        this.endTurnButton.setBackground(Color.GRAY.darker());
+
+        //Changing button text color
+        this.bankButton.setForeground(Color.WHITE);
+        this.rollButton.setForeground(Color.WHITE);
+        this.endTurnButton.setForeground(Color.WHITE);
+
+        //Changing the button border
+        this.bankButton.setBorderPainted(false);
+        this.rollButton.setBorderPainted(false);
+        this.endTurnButton.setBorderPainted(false);
+
+        //Changing button focus
+        this.bankButton.setFocusPainted(false);
+        this.rollButton.setFocusPainted(false);
+        this.endTurnButton.setFocusPainted(false);
+
+        //Adding buttons to the panel
         newPanel.add(this.bankButton);
         newPanel.add(this.rollButton);
         newPanel.add(this.endTurnButton);
@@ -191,27 +241,27 @@ public class GUI {
 
         //Setting up dimensions, color, and layout
         newPanel.setLayout(new GridLayout(3, 7, 10, 10));
-        newPanel.setBackground(Color.RED.darker().darker().darker().darker());
+        newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
         newPanel.setPreferredSize(new Dimension(500, 200));
 
         newPanel.add(new Panel());
 
         //Setting up side labels
-        JLabel diceLabel = new JLabel("       Dice:");
-        JLabel meldBoxesLabel = new JLabel("       Meld:");
+        JLabel diceLabel = new JLabel("  Dice:");
+        JLabel meldBoxesLabel = new JLabel("  Meld:");
 
         //Setting up text settings for the diceLabel
         diceLabel.setFont(new Font("Montserrat", Font.PLAIN, 15));
         diceLabel.setForeground(Color.WHITE);
-        diceLabel.setBackground(Color.RED.darker().darker().darker().darker());
+        diceLabel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
         //Setting up text settings for the meldBoxesLabel
         meldBoxesLabel.setFont(new Font("Montserrat", Font.PLAIN, 15));
         meldBoxesLabel.setForeground(Color.WHITE);
-        meldBoxesLabel.setBackground(Color.GREEN.darker().darker().darker().darker());
+        meldBoxesLabel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
         //Creates the A, B, C .. , F above each die 
-        for(Integer index = 0; index < 6; index++) {
+        for (Integer index = 0; index < 6; index++) {
             JLabel colLabel = new JLabel(Character.toString('A' + index), SwingConstants.CENTER);
 
             colLabel.setForeground(Color.WHITE);
@@ -221,7 +271,7 @@ public class GUI {
 
         newPanel.add(diceLabel);
 
-        for(Integer index = 0; index < 6; index++) {
+        for (Integer index = 0; index < 6; index++) {
             JButton diceStatusButton = new JButton();
             this.diceButtons.add(diceStatusButton);
             diceStatusButton.setEnabled(false);
@@ -234,7 +284,7 @@ public class GUI {
         newPanel.add(meldBoxesLabel);
 
         //Creates the checkboxes below the die
-        for(Integer index = 0; index < 6; index++) {
+        for (Integer index = 0; index < 6; index++) {
             JCheckBox meldCheckbox = new JCheckBox();
             meldCheckbox.setHorizontalAlignment(SwingConstants.CENTER);
             this.meldCheckboxes.add(meldCheckbox);
