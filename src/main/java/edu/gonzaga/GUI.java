@@ -66,13 +66,15 @@ public class GUI {
 
                 // Setting color and thickness of the lines
                 g2d.setColor(Color.GRAY.darker().darker());
-                g2d.setStroke(new BasicStroke(20));
 
-                // Drawing the first vertical line above the numbered columns
-                g2d.drawLine(140, 0, 140, Math.min(getHeight(), getHeight() - 190));
+                //All calculations based on containers rather than 1 machine's display size
+                g2d.setStroke(new BasicStroke(getWidth() / 100));
 
-                // Drawing the horizontal line across the bottom of the numbered rows
-                g2d.drawLine(140, getHeight() - 190, getWidth(), getHeight() - 190);
+                //Drawing the vertical line
+                g2d.drawLine(getWidth() / 13, 0, getWidth() / 13, getHeight() - (getHeight() / 4));
+
+                //Drawing the horizontal line
+                g2d.drawLine(getWidth() / 13, getHeight() - (getHeight() / 4), getWidth(), getHeight() - (getHeight() / 4));
             }
         };
         
@@ -275,6 +277,7 @@ public class GUI {
             JButton diceStatusButton = new JButton();
             this.diceButtons.add(diceStatusButton);
             diceStatusButton.setEnabled(false);
+            //Will need to execute these once the die images are added
             // diceStatusButton.setContentAreaFilled(false);
             // diceStatusButton.setBorderPainted(false);
 
