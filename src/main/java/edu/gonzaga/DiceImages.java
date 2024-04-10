@@ -18,11 +18,8 @@ public class DiceImages {
         for( int i = 1; i < 7; i++) {
             try {
                 String filename = imagesPath + "/D6-0" + i + ".png";
-                // This shows the current working directory for your running program
-                //System.out.println("Working Directory = " + System.getProperty("user.dir"));
-                System.out.println("Loading image: " + filename);
                 currPicture = ImageIO.read(new File(filename));
-                Image dimg = currPicture.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+                Image dimg = currPicture.getScaledInstance(65, 65, Image.SCALE_SMOOTH);
                 ImageIcon scaledImage = new ImageIcon(dimg);
                 images.add(scaledImage);
             } catch (IOException e) {

@@ -2,16 +2,13 @@ package edu.gonzaga;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.Flow;
 
 public class GUI {
-    JFrame mainWindowFrame;
-    JPanel controlPanel;
+    private JFrame mainWindowFrame;
 
     //Fulfills requirements for player and round information
     JTextField playerNameTextField = new JTextField();
@@ -20,10 +17,11 @@ public class GUI {
     //Fulfills dice and melding requirements
     ArrayList<JButton> diceButtons = new ArrayList<>();
     ArrayList<JCheckBox> meldCheckboxes = new ArrayList<>();
+    
     JButton rollButton = new JButton("Roll");
     JButton bankButton = new JButton("Bank");
     JButton endTurnButton = new JButton("End Turn");
-    //DiceImages diceImages = new DiceImages("media/");
+    DiceImages diceImages = new DiceImages("media/");
 
     //Board, player/round info, dice display, and checkboxes
     JPanel boardPanel = new JPanel();
@@ -203,32 +201,29 @@ public class GUI {
     }
 
     private JPanel bankRollEndTurnControlPanel() {
+        ArrayList<JButton> buttons = new ArrayList<>();
         JPanel newPanel = new JPanel();
+
+        //Adding the buttons to a list
+        buttons.add(this.bankButton);
+        buttons.add(this.rollButton);
+        buttons.add(this.endTurnButton);
 
         //Setting up the panel layout, size, and color
         newPanel.setLayout(new GridLayout(1, 3, 15, 15));
         newPanel.setPreferredSize(new Dimension(300, 50));
         newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
-        //Changing button color
-        this.bankButton.setBackground(Color.GRAY.darker());
-        this.rollButton.setBackground(Color.GRAY.darker());
-        this.endTurnButton.setBackground(Color.GRAY.darker());
-
-        //Changing button text color
-        this.bankButton.setForeground(Color.WHITE);
-        this.rollButton.setForeground(Color.WHITE);
-        this.endTurnButton.setForeground(Color.WHITE);
-
-        //Changing the button border
-        this.bankButton.setBorderPainted(false);
-        this.rollButton.setBorderPainted(false);
-        this.endTurnButton.setBorderPainted(false);
-
-        //Changing button focus
-        this.bankButton.setFocusPainted(false);
-        this.rollButton.setFocusPainted(false);
-        this.endTurnButton.setFocusPainted(false);
+        for (JButton button : buttons) {
+            //Changing button color
+            button.setBackground(Color.GRAY.darker());
+            //Changing button text color
+            button.setForeground(Color.WHITE);
+            //Changing the button border
+            button.setBorderPainted(false);
+            //Changing button focus
+            button.setFocusPainted(false);
+        }
 
         //Adding buttons to the panel
         newPanel.add(this.bankButton);
@@ -274,14 +269,17 @@ public class GUI {
         newPanel.add(diceLabel);
 
         for (Integer index = 0; index < 6; index++) {
-            JButton diceStatusButton = new JButton();
-            this.diceButtons.add(diceStatusButton);
-            diceStatusButton.setEnabled(false);
-            //Will need to execute these once the die images are added
-            // diceStatusButton.setContentAreaFilled(false);
-            // diceStatusButton.setBorderPainted(false);
+            JButton diceButton = new JButton();
+            
+            diceButton.setContentAreaFilled(false);
+            diceButton.setBorderPainted(false);
+            diceButton.setFocusPainted(false);
 
-            newPanel.add(diceStatusButton);
+            this.diceButtons.add(diceButton);
+
+            setDiceDisplay();
+            
+            newPanel.add(diceButton);
         }
 
         newPanel.add(meldBoxesLabel);
@@ -301,10 +299,22 @@ public class GUI {
         return newPanel;
     }
 
+    private void setDiceDisplay() {
+        Random random = new Random();
+
+        for (JButton dice : diceButtons) {
+            dice.setIcon(diceImages.getDieImage(random.nextInt(6) + 1));
+        }
+    }
+
     void runGUI() {
         System.out.println("Hello Team Game");
 
         setupGUI();
+
+        EventListeners listener = new EventListeners(this);
+
+        listener.rollButtonListener();
 
         mainWindowFrame.setVisible(true);
     }
