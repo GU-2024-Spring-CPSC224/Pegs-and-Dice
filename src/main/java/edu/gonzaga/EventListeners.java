@@ -12,6 +12,33 @@ public class EventListeners {
     public EventListeners(GUI gui) {
         this.gui = gui;
     }
+
+    public void playerNameTextFieldListener() {
+        gui.playerNameTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                /* Actions */
+            }
+        });
+    }
+
+    public void bankButtonListener() {
+        gui.bankButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                /* Actions */
+            }
+        });
+    }
+
+    public void endTurnButtonListener() {
+        gui.endTurnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                /* Actions */
+            }
+        });
+    }
     
     public void rollButtonListener() {
         gui.rollButton.addActionListener(new ActionListener() {
@@ -24,7 +51,7 @@ public class EventListeners {
                     @Override
                     public void actionPerformed(ActionEvent e2) {
                         /*Actions go here for what to do after rolling
-                         * (disable the roll button, make sure the player combos and moves peg, game flow stuff)
+                         * (disable the roll button, make sure the player combos and moves peg, game flow stuff, update the dice display)
                         */
                     }
                 });
@@ -35,7 +62,7 @@ public class EventListeners {
         });
     }
 
-    public void animateRoll() {
+    private void animateRoll() {
         for (int i = 0; i < gui.diceButtons.size(); i++) {
             int index = i;
 
@@ -66,7 +93,7 @@ public class EventListeners {
         }
     }
 
-    public Integer setRandomDie() {
+    private Integer setRandomDie() {
         Random random = new Random();
         return random.nextInt(6) + 1;
     }

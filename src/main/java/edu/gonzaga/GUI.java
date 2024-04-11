@@ -3,12 +3,15 @@ package edu.gonzaga;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+// import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.Flow;
+// import java.util.concurrent.Flow;
 
 public class GUI {
     private JFrame mainWindowFrame;
+
+    //Array list of players
+    ArrayList<Player> players = new ArrayList<>();
 
     //Fulfills requirements for player and round information
     JTextField playerNameTextField = new JTextField();
@@ -27,6 +30,13 @@ public class GUI {
     JPanel boardPanel = new JPanel();
     JPanel playerInfoPanel = new JPanel();
     JPanel diceMeldAndRollControlPanel = new JPanel();
+
+    public GUI() {
+        //TESTING PURPOSES
+        Player testPlayer = new Player();
+
+        players.add(testPlayer);
+    }
 
     void setupGUI() {
         //Main Window
@@ -308,13 +318,15 @@ public class GUI {
     }
 
     void runGUI() {
-        System.out.println("Hello Team Game");
-
         setupGUI();
 
-        EventListeners listener = new EventListeners(this);
+        EventListeners listeners = new EventListeners(this);
 
-        listener.rollButtonListener();
+        //Calling our event listeners after we setup the GUI
+        listeners.rollButtonListener();
+        listeners.bankButtonListener();
+        listeners.endTurnButtonListener();
+        listeners.playerNameTextFieldListener();
 
         mainWindowFrame.setVisible(true);
     }
