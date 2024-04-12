@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Game {
     private ArrayList<Player> players;
     private ArrayList<GUI> playerGUIs;
+    //Might want to make this a part of the player? (less passing around)
     private Integer roundCount;
 
     public Game() {
@@ -15,7 +16,7 @@ public class Game {
 
     public void getHowManyPlayers() {
         /*
-         * MIGHT NEED TO MAKE A WHOLE NEW DIFFERENT GUI TO DISPLAY ALL THE PLAYER START STUFF
+         * MIGHT NEED TO MAKE A WHOLE NEW DIFFERENT GUI TO DISPLAY ALL THE PLAYER START STUFF AND INTRO BANNER
          */
     }
 
@@ -32,6 +33,7 @@ public class Game {
     public void startGame() {
         //getHowManyPlayers();
 
+        //debug
         initializePlayers(1);
 
         //NEED TO MAKE A STATE MACHINE OR SWITCH UP THE LOGIC UNCOMMENTING WILL CREATE INFINITE GUIS AS THEY DONT SEEM TO PAUSE WHEN MADE AND NOT CLOSED
@@ -51,6 +53,7 @@ public class Game {
         }
     }
 
+    //Should work, untested
     private boolean checkForWin() {
         boolean isWin = false;
 
