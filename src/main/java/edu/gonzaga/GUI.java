@@ -10,8 +10,7 @@ import java.util.Random;
 public class GUI {
     private JFrame mainWindowFrame;
 
-    //Array list of players
-    ArrayList<Player> players = new ArrayList<>();
+    Player player;
 
     //Fulfills requirements for player and round information
     JTextField playerNameTextField = new JTextField();
@@ -30,13 +29,6 @@ public class GUI {
     JPanel boardPanel = new JPanel();
     JPanel playerInfoPanel = new JPanel();
     JPanel diceMeldAndRollControlPanel = new JPanel();
-
-    public GUI() {
-        //TESTING PURPOSES
-        Player testPlayer = new Player();
-
-        players.add(testPlayer);
-    }
 
     void setupGUI() {
         //Main Window
@@ -103,6 +95,11 @@ public class GUI {
                 button.setFocusPainted(false);
 
                 newPanel.add(button);
+
+                //Setting the "pegs"
+                if (player.getPlayerBoard()[row][col] == true && col != 0) {
+                    button.setForeground(Color.WHITE.darker().darker());
+                }
 
                 //Setting the column numbers 1 - 5
                 if (col == 0) {
@@ -179,6 +176,7 @@ public class GUI {
         playerNameTextField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
         playerNameTextField.setBackground(Color.GRAY.darker().darker());
         playerNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
+        playerNameTextField.setText(player.getPlayerName());
 
         newPanel.add(playerNameTextField);
         
@@ -317,7 +315,12 @@ public class GUI {
         }
     }
 
-    void runGUI() {
+    void runGUI(Player player) {
+        //Debug statements
+        this.player = player;
+
+        player.setPlayerName("Evan");
+        
         setupGUI();
 
         EventListeners listeners = new EventListeners(this);

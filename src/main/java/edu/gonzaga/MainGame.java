@@ -18,8 +18,11 @@ public class MainGame {
     public static void main(String[] args) {
         //MIGHT NEED TO MAKE A GAME CLASS THAT KEEPS TRACK OF PLAYER LIST, WHAT ROUND, AND BASIC GAME LOOP
 
-        GUI mainGUI = new GUI();
+        // GUI mainGUI = new GUI();
 
-        mainGUI.runGUI();
+        // mainGUI.runGUI();
+
+        Game mainGame = new Game();
+        mainGame.startGame();
     }
 }

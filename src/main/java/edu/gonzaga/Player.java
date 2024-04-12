@@ -6,6 +6,12 @@ public class Player {
     private Die[] playerHand;
     private boolean[][] playerBoard;
 
+    public Player() {
+        this.playerName = "";
+        this.playerHand = makeDie();
+        this.playerBoard = makeBoard();
+    }
+
     private Die[] makeDie() {
         Die[] dice = new Die[6];
 
@@ -17,10 +23,10 @@ public class Player {
     }
 
     private boolean[][] makeBoard() {
-        boolean[][] board = new boolean[6][12];
+        boolean[][] board = new boolean[7][13];
     
         // Setting true for elements in the 6th row and false for all other elements
-        for (int col = 0; col < board[0].length; col++) {
+        for (int col = 0; col < 13; col++) {
             board[5][col] = true;
         }
         
@@ -33,12 +39,6 @@ public class Player {
                 playerHand[i].roll();
             }
         }
-    }
-
-    public Player() {
-        this.playerName = "";
-        this.playerHand = makeDie();
-        this.playerBoard = makeBoard();
     }
 
     public void setPlayerName(String name) {
@@ -63,5 +63,20 @@ public class Player {
 
     public void updatePlayerHand() {
         rollHand();
+    }
+
+    public boolean hasWon() {
+        boolean isWin = true;
+
+        for (int col = 0; col < 13; col++) {
+            if (!playerBoard[0][col]) {
+                //If there is a single false on the top row there is no win
+                isWin = false;
+
+                break;
+            }
+        }
+
+        return isWin;
     }
 }
