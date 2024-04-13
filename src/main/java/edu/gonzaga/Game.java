@@ -36,13 +36,17 @@ public class Game {
         //debug
         initializePlayers(1);
 
+        StartScreenGUI startScreen = new StartScreenGUI();
+
+        startScreen.runStartScreenGUI();
+
         //NEED TO MAKE A STATE MACHINE OR SWITCH UP THE LOGIC UNCOMMENTING WILL CREATE INFINITE GUIS AS THEY DONT SEEM TO PAUSE WHEN MADE AND NOT CLOSED
         // while (!checkForWin()) {
         //     roundCount++;
         //     playRound();
         // }
 
-        playRound();
+        //playRound();
 
         System.out.println("Winner");
     }
