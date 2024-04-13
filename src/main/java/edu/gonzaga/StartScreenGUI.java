@@ -64,7 +64,7 @@ public class StartScreenGUI {
         title.add(titleLabel);
 
         ImageIcon banner = new ImageIcon("media/banner.png");
-        Image scaledImage = banner.getImage().getScaledInstance(425, 425, Image.SCALE_SMOOTH);
+        Image scaledImage = banner.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
         JLabel bannerLabel = new JLabel(scaledIcon);
