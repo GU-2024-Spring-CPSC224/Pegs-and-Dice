@@ -7,6 +7,7 @@ import java.util.Random;
 
 public class EventListeners {
     private GUI gui;
+    private Object lock;
 
     //Allows us to make changes to the main GUI
     public EventListeners(GUI gui) {
@@ -35,7 +36,7 @@ public class EventListeners {
         gui.endTurnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /* Actions */
+                /* things go here */
             }
         });
     }

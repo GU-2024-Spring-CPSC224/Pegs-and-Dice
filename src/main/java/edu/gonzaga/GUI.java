@@ -11,6 +11,7 @@ public class GUI {
     private JFrame mainWindowFrame;
 
     Player player;
+    Integer roundCount;
 
     //Fulfills requirements for player and round information
     JTextField playerNameTextField = new JTextField();
@@ -143,9 +144,11 @@ public class GUI {
         roundCountLabel.setFont(new Font("Montserrat", Font.PLAIN, 30));
         roundCountLabel.setForeground(Color.WHITE);
         roundCountTextField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+        roundCountTextField.setText(roundCount.toString());
         roundCountTextField.setColumns(3);
         roundCountTextField.setFont(new Font("Montserrat", Font.PLAIN, 25));
         roundCountTextField.setBackground(Color.GRAY.darker().darker());
+        roundCountTextField.setForeground(Color.WHITE);
         roundCountTextField.setHorizontalAlignment(SwingConstants.CENTER);
         roundCountTextField.setEditable(false);
         
@@ -315,11 +318,9 @@ public class GUI {
         }
     }
 
-    void runGUI(Player player) {
-        //Debug statements
+    void runGUI(Player player, Integer roundCount) {
         this.player = player;
-
-        player.setPlayerName("Evan");
+        this.roundCount = roundCount;
         
         setupGUI();
 

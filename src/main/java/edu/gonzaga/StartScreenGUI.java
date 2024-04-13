@@ -9,14 +9,19 @@ import java.awt.event.ActionListener;
 public class StartScreenGUI {
     JFrame mainBannerWindow;
 
-    //Player info gatherer
     JLabel getNumPlayersLabel = new JLabel();
-    JTextField getNumPlayersTextField = new JTextField();
+    JButton singleButton = new JButton();
+    JButton doubleButton = new JButton();
+    JButton tripleButton = new JButton();
+    JButton quadButton = new JButton();
 
     //Panels
     JPanel playerInfoPanel = new JPanel();
     JPanel bottomPanel = new JPanel();
     JPanel bannerFrame = new JPanel();
+
+    //Dice images
+    private DiceImages diceImages = new DiceImages("media/");
 
     void setupStartScreenGUI() {
         this.mainBannerWindow = new JFrame("Olivares Enthusiasts Pegs & Dice");
@@ -28,7 +33,6 @@ public class StartScreenGUI {
 
         mainBannerWindow.getContentPane().add(BorderLayout.NORTH, this.bannerFrame);
         mainBannerWindow.getContentPane().add(BorderLayout.CENTER, this.playerInfoPanel);
-        mainBannerWindow.getContentPane().add(BorderLayout.SOUTH, genBorderPanel());
         mainBannerWindow.pack();
 
         //Starts the window at fullscreen
@@ -51,16 +55,16 @@ public class StartScreenGUI {
         JPanel bannerPanel = new JPanel();
         JPanel titlePanel = new JPanel();
 
-        JLabel titleLabel = new JLabel();
+        JLabel teamLabel = new JLabel();
         JLabel presentLabel = new JLabel();
-        JLabel namesLabel = new JLabel();
+        JLabel titleLabel = new JLabel();
 
-        title.add(titleLabel);
+        title.add(teamLabel);
         title.add(presentLabel);
-        title.add(namesLabel);
+        title.add(titleLabel);
 
         ImageIcon banner = new ImageIcon("media/banner.png");
-        Image scaledImage = banner.getImage().getScaledInstance(350, 350, Image.SCALE_SMOOTH);
+        Image scaledImage = banner.getImage().getScaledInstance(425, 425, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
         JLabel bannerLabel = new JLabel(scaledIcon);
@@ -68,25 +72,29 @@ public class StartScreenGUI {
         newPanel.setLayout(new BorderLayout());
         newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
+        bannerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 15));
         bannerPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
-        titlePanel.setLayout(new BorderLayout());
+        titlePanel.setLayout(new BorderLayout(SwingConstants.CENTER, 15));
         titlePanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
         for (JLabel text : title) {
-            text.setFont(new Font("Times New Roman", Font.PLAIN, 45));
             text.setBackground(Color.GRAY.darker().darker());
             text.setForeground(Color.WHITE);
             text.setHorizontalAlignment(SwingConstants.CENTER);
         }
-        
-        titleLabel.setText("Olivares Enthusiasts");
-        presentLabel.setText("Presents");
-        namesLabel.setText("Pegs & Dice");
 
-        titlePanel.add(titleLabel, BorderLayout.NORTH);
+        teamLabel.setFont(new Font("Times New Roman", Font.PLAIN, 80));
+        presentLabel.setFont(new Font("Times New Roman", Font.PLAIN, 50));
+        titleLabel.setFont(new Font("Times New Roman", Font.PLAIN, 70));
+        
+        teamLabel.setText("Olivares Enthusiasts");
+        presentLabel.setText("Presents");
+        titleLabel.setText("Pegs & Dice");
+
+        titlePanel.add(teamLabel, BorderLayout.NORTH);
         titlePanel.add(presentLabel, BorderLayout.CENTER);
-        titlePanel.add(namesLabel, BorderLayout.SOUTH);
+        titlePanel.add(titleLabel, BorderLayout.SOUTH);
 
         bannerPanel.add(bannerLabel);
 
@@ -97,48 +105,162 @@ public class StartScreenGUI {
     }
 
     public JPanel genGetPlayerInfoPanel() {
+        ArrayList<JPanel> panels = new ArrayList<>();
+
         JPanel newPanel = new JPanel();
         JPanel labelPanel = new JPanel();
-        JPanel textFieldPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
+        JPanel singlePlayer = new JPanel();
+        JPanel multiPlayer = new JPanel();
+        JPanel singlePlayerText = new JPanel();
+        JPanel multiPlayerText = new JPanel();
+        JPanel nestedSingle = new JPanel();
+        JPanel nestedMulti = new JPanel();
+
+        JLabel singlePlayerLabel = new JLabel();
+        JLabel multiPlayerLabel = new JLabel();
+
+        panels.add(singlePlayer);
+        panels.add(multiPlayer);
         
+        //For centering and coloring of the text
+        singlePlayerText.setLayout(new FlowLayout(FlowLayout.CENTER));
+        singlePlayerText.setBackground(Color.GRAY.darker().darker().darker().darker());
+
+        multiPlayerText.setLayout(new FlowLayout(FlowLayout.CENTER));
+        multiPlayerText.setBackground(Color.GRAY.darker().darker().darker().darker());
+
+        //For centering and coloring of the buttons
+        nestedSingle.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 5));
+        nestedSingle.setBackground(Color.GRAY.darker().darker().darker().darker());
+
+        nestedMulti.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 5));
+        nestedMulti.setBackground(Color.GRAY.darker().darker().darker().darker());
+        
+        //Panel stuff
         newPanel.setLayout(new BorderLayout());
         newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
         labelPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
-        textFieldPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
+        buttonPanel.setLayout(new BorderLayout());
+        buttonPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
-        getNumPlayersLabel.setFont(new Font("Montserrat", Font.PLAIN, 30));
-        getNumPlayersLabel.setText("How Many Players?");
+        //Singleplayer Label setup
+        singlePlayerLabel.setText("Singleplayer");
+        singlePlayerLabel.setFont(new Font("Arial", Font.PLAIN, 25));
+        singlePlayerLabel.setForeground(Color.WHITE);
+
+        //Multiplayer Label setup
+        multiPlayerLabel.setText("Multiplayer");
+        multiPlayerLabel.setFont(new Font("Arial", Font.PLAIN, 25));
+        multiPlayerLabel.setForeground(Color.WHITE);
+
+        setupPanels(panels);
+        setupButtons();
+
+        getNumPlayersLabel.setFont(new Font("Times New Roman", Font.PLAIN, 45));
+        getNumPlayersLabel.setText("Who's Playing?");
         getNumPlayersLabel.setForeground(Color.WHITE);
 
-        getNumPlayersTextField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
-        getNumPlayersTextField.setColumns(15);
-        getNumPlayersTextField.setFont(new Font("Montserrat", Font.PLAIN, 25));
-        getNumPlayersTextField.setBackground(Color.GRAY.darker().darker());
-        getNumPlayersTextField.setForeground(Color.WHITE);
-        getNumPlayersTextField.setHorizontalAlignment(SwingConstants.CENTER);
+        singlePlayerText.add(singlePlayerLabel);
+        multiPlayerText.add(multiPlayerLabel);
+
+        nestedSingle.add(singleButton);
+        nestedMulti.add(doubleButton);
+        nestedMulti.add(tripleButton);
+        nestedMulti.add(quadButton);
+
+        singlePlayer.add(singlePlayerText, BorderLayout.NORTH);
+        singlePlayer.add(nestedSingle, BorderLayout.CENTER);
+
+        multiPlayer.add(multiPlayerText, BorderLayout.NORTH);
+        multiPlayer.add(nestedMulti, BorderLayout.CENTER);
 
         labelPanel.add(getNumPlayersLabel);
-        textFieldPanel.add(getNumPlayersTextField);
+
+        buttonPanel.add(singlePlayer, BorderLayout.NORTH);
+        buttonPanel.add(multiPlayer, BorderLayout.CENTER);
 
         newPanel.add(labelPanel, BorderLayout.NORTH);
-        newPanel.add(textFieldPanel, BorderLayout.CENTER);
+        newPanel.add(buttonPanel, BorderLayout.CENTER);
 
         return newPanel;
+    }
+
+    public void setupPanels(ArrayList<JPanel> panels) {
+        for (JPanel panel : panels) {
+            panel.setLayout(new BorderLayout());
+            panel.setBackground(Color.GRAY.darker().darker().darker().darker());
+        }
+    }
+
+    public void setupButtons() {
+        ArrayList<JButton> dice = new ArrayList<>();
+        Integer count = 0;
+
+        dice.add(singleButton);
+        dice.add(doubleButton);
+        dice.add(tripleButton);
+        dice.add(quadButton);
+
+        for (JButton die : dice) {
+            die.setContentAreaFilled(false);
+            die.setMargin(new Insets(-5, -5, -5, -5));
+            die.setIcon(diceImages.getDieImage(++count));
+        }
     }
 
     public void runStartScreenGUI() {
         setupStartScreenGUI();
 
-        getNumPlayersTextField();
+        singleButtonEventListener();
+        doubleButtonEventListener();
+        tripleButtonEventListener();
+        quadButtonEventListener();
 
         mainBannerWindow.setVisible(true);
     }
 
-    public void getNumPlayersTextField() {
-        getNumPlayersTextField.addActionListener(new ActionListener() {
+    public void transitionToGame(Integer numPlayers) {
+        Game game = new Game();
+        
+        mainBannerWindow.setVisible(false);
+
+        game.initializePlayers(numPlayers); 
+        game.playGame();
+    }    
+
+    public void singleButtonEventListener() {
+        singleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /* Actions */
+                transitionToGame(1);
+            }
+        });
+    }
+
+    public void doubleButtonEventListener() {
+        doubleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                transitionToGame(2);
+            }
+        });
+    }
+
+    public void tripleButtonEventListener() {
+        tripleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                transitionToGame(3);
+            }
+        });
+    }
+
+    public void quadButtonEventListener() {
+        quadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                transitionToGame(4);
             }
         });
     }
