@@ -5,11 +5,60 @@ public class Player {
     private String playerName;
     private Die[] playerHand;
     private boolean[][] playerBoard;
+    private GUI playerGUI;
 
     public Player() {
         this.playerName = "";
         this.playerHand = makeDie();
         this.playerBoard = makeBoard();
+        this.playerGUI = new GUI();
+    }
+
+    public Die[] getPlayerHand() {
+        return this.playerHand;
+    }
+
+    public GUI getPlayerGUI() {
+        return this.playerGUI;
+    }
+
+    public void setPlayerName(String name) {
+        this.playerName = name;
+    }
+
+    public String getPlayerName() {
+        return this.playerName;
+    }
+
+    public boolean[][] getPlayerBoard() {
+        return this.playerBoard;
+    }
+
+    public void addToHand(Die[] dice, Integer index) {
+        playerHand[index] = dice[index];
+    }
+
+    public void removeFromHand(Integer index) {
+        playerHand[index] = null;
+    }
+
+    public void updatePlayerHand() {
+        rollHand();
+    }
+
+    public boolean hasWon() {
+        boolean isWin = true;
+
+        for (int col = 0; col < 13; col++) {
+            if (!playerBoard[0][col]) {
+                //If there is a single false on the top row there is no win
+                isWin = false;
+
+                break;
+            }
+        }
+
+        return isWin;
     }
 
     private Die[] makeDie() {
@@ -39,44 +88,5 @@ public class Player {
                 playerHand[i].roll();
             }
         }
-    }
-
-    public void setPlayerName(String name) {
-        this.playerName = name;
-    }
-
-    public String getPlayerName() {
-        return this.playerName;
-    }
-
-    public boolean [][] getPlayerBoard() {
-        return this.playerBoard;
-    }
-
-    public void addToHand(Die[] dice, Integer index) {
-        playerHand[index] = dice[index];
-    }
-
-    public void removeFromHand(Integer index) {
-        playerHand[index] = null;
-    }
-
-    public void updatePlayerHand() {
-        rollHand();
-    }
-
-    public boolean hasWon() {
-        boolean isWin = true;
-
-        for (int col = 0; col < 13; col++) {
-            if (!playerBoard[0][col]) {
-                //If there is a single false on the top row there is no win
-                isWin = false;
-
-                break;
-            }
-        }
-
-        return isWin;
     }
 }

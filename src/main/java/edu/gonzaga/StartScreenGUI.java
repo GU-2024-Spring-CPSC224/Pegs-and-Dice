@@ -64,7 +64,7 @@ public class StartScreenGUI {
         title.add(titleLabel);
 
         ImageIcon banner = new ImageIcon("media/banner.png");
-        Image scaledImage = banner.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        Image scaledImage = banner.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
         JLabel bannerLabel = new JLabel(scaledIcon);
@@ -105,7 +105,8 @@ public class StartScreenGUI {
     }
 
     public JPanel genGetPlayerInfoPanel() {
-        ArrayList<JPanel> panels = new ArrayList<>();
+        ArrayList<JPanel> borderPanels = new ArrayList<>();
+        ArrayList<JPanel> flowPanels = new ArrayList<>();
 
         JPanel newPanel = new JPanel();
         JPanel labelPanel = new JPanel();
@@ -120,22 +121,15 @@ public class StartScreenGUI {
         JLabel singlePlayerLabel = new JLabel();
         JLabel multiPlayerLabel = new JLabel();
 
-        panels.add(singlePlayer);
-        panels.add(multiPlayer);
-        
-        //For centering and coloring of the text
-        singlePlayerText.setLayout(new FlowLayout(FlowLayout.CENTER));
-        singlePlayerText.setBackground(Color.GRAY.darker().darker().darker().darker());
+        borderPanels.add(singlePlayer);
+        borderPanels.add(multiPlayer);
 
-        multiPlayerText.setLayout(new FlowLayout(FlowLayout.CENTER));
-        multiPlayerText.setBackground(Color.GRAY.darker().darker().darker().darker());
+        flowPanels.add(singlePlayerText);
+        flowPanels.add(multiPlayerText);
+        flowPanels.add(nestedSingle);
+        flowPanels.add(nestedMulti);
 
-        //For centering and coloring of the buttons
-        nestedSingle.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 5));
-        nestedSingle.setBackground(Color.GRAY.darker().darker().darker().darker());
-
-        nestedMulti.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 5));
-        nestedMulti.setBackground(Color.GRAY.darker().darker().darker().darker());
+        setupFlowPanels(flowPanels);
         
         //Panel stuff
         newPanel.setLayout(new BorderLayout());
@@ -154,7 +148,7 @@ public class StartScreenGUI {
         multiPlayerLabel.setFont(new Font("Arial", Font.PLAIN, 25));
         multiPlayerLabel.setForeground(Color.WHITE);
 
-        setupPanels(panels);
+        setupBorderPanels(borderPanels);
         setupButtons();
 
         getNumPlayersLabel.setFont(new Font("Times New Roman", Font.PLAIN, 45));
@@ -186,7 +180,14 @@ public class StartScreenGUI {
         return newPanel;
     }
 
-    public void setupPanels(ArrayList<JPanel> panels) {
+    public void setupFlowPanels(ArrayList<JPanel> panels) {
+        for (JPanel panel : panels) {
+            panel.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 5));
+            panel.setBackground(Color.GRAY.darker().darker().darker().darker());
+        }
+    }
+
+    public void setupBorderPanels(ArrayList<JPanel> panels) {
         for (JPanel panel : panels) {
             panel.setLayout(new BorderLayout());
             panel.setBackground(Color.GRAY.darker().darker().darker().darker());
@@ -222,11 +223,11 @@ public class StartScreenGUI {
 
     public void transitionToGame(Integer numPlayers) {
         Game game = new Game();
-        
-        mainBannerWindow.setVisible(false);
 
         game.initializePlayers(numPlayers); 
         game.playGame();
+
+        mainBannerWindow.setVisible(false);
     }    
 
     public void singleButtonEventListener() {

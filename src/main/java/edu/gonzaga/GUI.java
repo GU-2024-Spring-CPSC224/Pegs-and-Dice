@@ -8,7 +8,7 @@ import java.util.Random;
 // import java.util.concurrent.Flow;
 
 public class GUI {
-    private JFrame mainWindowFrame;
+    JFrame mainWindowFrame;
 
     Player player;
     Integer roundCount;
@@ -318,6 +318,18 @@ public class GUI {
         }
     }
 
+    public void disableCheckBoxes() {
+        for (JCheckBox checkBox : meldCheckboxes) {
+            checkBox.setEnabled(false);
+        }
+    }
+
+    public void enableCheckBoxes() {
+        for (JCheckBox checkBox : meldCheckboxes) {
+            checkBox.setEnabled(true);
+        }
+    }
+
     void runGUI(Player player, Integer roundCount) {
         this.player = player;
         this.roundCount = roundCount;
@@ -331,6 +343,12 @@ public class GUI {
         listeners.bankButtonListener();
         listeners.endTurnButtonListener();
         listeners.playerNameTextFieldListener();
+        listeners.addCheckboxListeners();
+
+        rollButton.setEnabled(false);
+        bankButton.setEnabled(false);
+        endTurnButton.setEnabled(false);
+        disableCheckBoxes();
 
         mainWindowFrame.setVisible(true);
     }

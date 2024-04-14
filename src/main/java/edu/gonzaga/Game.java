@@ -29,12 +29,9 @@ public class Game {
     }
 
     public void playGame() {
-        GUI mainGame = new GUI();
-        Object lock = new Object();
-
-        mainGame.runGUI(players.get(0), ++roundCount);
-
-        System.out.println("Winner");
+        for (Player player : players) {
+            player.getPlayerGUI().runGUI(player, ++roundCount);
+        }
     }
 
     //Should work, untested
