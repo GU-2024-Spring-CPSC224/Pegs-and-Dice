@@ -227,7 +227,7 @@ public class StartScreenGUI {
         game.initializePlayers(numPlayers); 
         game.playGame();
 
-        mainBannerWindow.setVisible(false);
+        mainBannerWindow.dispose();
     }    
 
     public void singleButtonEventListener() {

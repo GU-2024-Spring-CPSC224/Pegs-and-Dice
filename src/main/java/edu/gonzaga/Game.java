@@ -34,7 +34,6 @@ public class Game {
         }
     }
 
-    //Should work, untested
     private boolean checkForWin() {
         boolean isWin = false;
 

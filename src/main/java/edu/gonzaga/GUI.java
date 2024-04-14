@@ -3,9 +3,9 @@ package edu.gonzaga;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-// import java.util.Arrays;
 import java.util.Random;
-// import java.util.concurrent.Flow;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GUI {
     JFrame mainWindowFrame;
@@ -30,6 +30,8 @@ public class GUI {
     JPanel boardPanel = new JPanel();
     JPanel playerInfoPanel = new JPanel();
     JPanel diceMeldAndRollControlPanel = new JPanel();
+
+    Integer comboChosen;
 
     void setupGUI() {
         //Main Window
@@ -336,14 +338,12 @@ public class GUI {
         
         setupGUI();
 
-        EventListeners listeners = new EventListeners(this);
-
         //Calling our event listeners after we setup the GUI
-        listeners.rollButtonListener();
-        listeners.bankButtonListener();
-        listeners.endTurnButtonListener();
-        listeners.playerNameTextFieldListener();
-        listeners.addCheckboxListeners();
+        rollButtonListener();
+        bankButtonListener();
+        endTurnButtonListener();
+        playerNameTextFieldListener();
+        addCheckboxListeners();
 
         rollButton.setEnabled(false);
         bankButton.setEnabled(false);
@@ -351,5 +351,145 @@ public class GUI {
         disableCheckBoxes();
 
         mainWindowFrame.setVisible(true);
+    }
+
+    //All these listeners are in progress
+    public void playerNameTextFieldListener() {
+        playerNameTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String playerName = playerNameTextField.getText().trim();
+
+                if (playerName.isEmpty()) {
+                    playerName = "Unknown Player";
+                }
+
+                player.setPlayerName(playerName);
+                playerNameTextField.setText(playerName);
+
+                rollButton.setEnabled(true);
+            }
+        });
+    }
+
+    //All these listeners are in progress
+    public void bankButtonListener() {
+        bankButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
+    }
+
+    //All these listeners are in progress
+    public void endTurnButtonListener() {
+        endTurnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainWindowFrame.setVisible(false);
+            }
+        });
+    }
+
+    //All these listeners are in progress
+    public void addCheckboxListeners() {
+        for (int i = 0; i < meldCheckboxes.size(); i++) {
+            Integer index = i;
+
+            meldCheckboxes.get(i).addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (checkForProperCombo()) {
+                        bankButton.setEnabled(true);
+                    } else {
+                        bankButton.setEnabled(false);
+                    }
+                }
+            });
+        }
+    }
+
+    public boolean checkForProperCombo() {
+        Integer checkBoxCount = 0;
+        boolean isBankable = false;
+
+        Integer meldSum = 0;
+
+        for (int i = 0; i < meldCheckboxes.size(); i++) {
+            if (meldCheckboxes.get(i).isSelected()) {
+                meldSum += player.getPlayerHand()[i].getSideUp();
+                checkBoxCount++;
+            }
+
+            if (checkBoxCount == 1 || checkBoxCount == 2 && meldSum >= 7) {
+                isBankable = true;
+            } else {
+                isBankable = false;
+            }
+        }
+
+        return isBankable;
+    }
+    
+    public void rollButtonListener() {
+        rollButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                player.updatePlayerHand();
+                
+                animateRoll();
+
+                Timer delayTimer = new Timer(1800, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e2) {
+                        //Allows a player to pick which die they want to try and combo
+                        enableCheckBoxes();
+
+                        //A player can't re-roll before they've selected a combo
+                        rollButton.setEnabled(false);
+                    }
+                });
+
+                delayTimer.setRepeats(false);
+                delayTimer.start();
+            }
+        });
+    }
+
+    private void animateRoll() {
+        for (int i = 0; i < diceButtons.size(); i++) {
+            int index = i;
+
+            Timer delayTimer = new Timer(10, new ActionListener() {
+                int rollCount = 0;
+
+                @Override
+                public void actionPerformed(ActionEvent e2) {
+                    Timer rollingTimer = new Timer(100, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            diceButtons.get(index).setIcon(diceImages.getDieImage(setRandomDie()));
+                            rollCount++;
+
+                            if (rollCount >= 15) {
+                                ((Timer) e.getSource()).stop();
+                                
+                                diceButtons.get(index).setIcon(diceImages.getDieImage(player.getPlayerHand()[index].getSideUp()));
+                            }
+                        }
+                    });
+                    rollingTimer.start();
+                }
+            });
+
+            delayTimer.setRepeats(false);
+            delayTimer.start();
+        }
+    }
+
+    private Integer setRandomDie() {
+        Random random = new Random();
+        return random.nextInt(6) + 1;
     }
 }
