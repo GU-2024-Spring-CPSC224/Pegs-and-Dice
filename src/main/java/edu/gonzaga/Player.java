@@ -5,12 +5,16 @@ public class Player {
     private String playerName;
     private Die[] playerHand;
     private boolean[][] playerBoard;
+
+    //IS NOT FINAL CAN CHANGE LOGIC
     private GUI playerGUI;
 
     public Player() {
         this.playerName = "";
         this.playerHand = makeDie();
         this.playerBoard = makeBoard();
+        
+        //IS NOT FINAL CAN CHANGE LOGIC
         this.playerGUI = new GUI();
     }
 
@@ -73,10 +77,15 @@ public class Player {
 
     private boolean[][] makeBoard() {
         boolean[][] board = new boolean[7][13];
-    
-        // Setting true for elements in the 6th row and false for all other elements
-        for (int col = 0; col < 13; col++) {
-            board[5][col] = true;
+
+        for (int row = 0; row < 7; row++) {
+            for (int col = 0; col < 13; col++) {
+                if (row == 5) {
+                    board[row][col] = true;
+                } else {
+                    board[row][col] = false;
+                }
+            }
         }
         
         return board;

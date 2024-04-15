@@ -21,6 +21,9 @@ public class GUI {
     ArrayList<JButton> diceButtons = new ArrayList<>();
     ArrayList<JCheckBox> meldCheckboxes = new ArrayList<>();
     
+    //Contains board buttons
+    ArrayList<JButton> pegHoles = new ArrayList<>();
+    
     JButton rollButton = new JButton("Roll");
     JButton bankButton = new JButton("Bank");
     JButton endTurnButton = new JButton("End Turn");
@@ -89,6 +92,7 @@ public class GUI {
         for (int row = 0; row < 7; row++) {
             for (int col = 0; col < 13; col++) {
                 JButton button = new JButton(".");
+                pegHoles.add(button);
 
                 //Setting up the button settings and size of text
                 button.setBorderPainted(false);
@@ -332,6 +336,7 @@ public class GUI {
         }
     }
 
+    //This does not have to be the only way to pass player info (probably needs to change anyways)
     void runGUI(Player player, Integer roundCount) {
         this.player = player;
         this.roundCount = roundCount;
@@ -347,11 +352,38 @@ public class GUI {
 
         rollButton.setEnabled(false);
         bankButton.setEnabled(false);
-        endTurnButton.setEnabled(false);
+        //endTurnButton.setEnabled(false);
         disableCheckBoxes();
 
         mainWindowFrame.setVisible(true);
     }
+
+    /**
+     * rotateBoardView()
+     * 
+     * Uses the array of JButtons setup during the genBoard execution and updates them based
+     * on the data inside of the playerBoard array.
+     * Additionally sets the playerNameTextField to the current player.
+     * 
+     * @return void
+     */
+    public void rotateBoardView() {
+        Integer index = 0;
+        boolean[][] playerBoard = player.getPlayerBoard();
+
+        playerNameTextField.setText(player.getPlayerName());
+    
+        for (int row = 0; row < 7; row++) {
+            for (int col = 0; col < 13; col++) {
+                JButton hole = pegHoles.get(index++);
+    
+                //Setting the "pegs"
+                if (playerBoard[row][col] == true && col != 0) {
+                    hole.setForeground(Color.WHITE.darker().darker());
+                }
+            }
+        }
+    }    
 
     //All these listeners are in progress
     public void playerNameTextFieldListener() {
@@ -387,7 +419,13 @@ public class GUI {
         endTurnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainWindowFrame.setVisible(false);
+                //Sets the board to the "winning" state for debug purposes
+                for (int col = 0; col < 13; col++) {
+                    player.getPlayerBoard()[0][col] = true;
+                }
+
+                //Should update to the next player
+                rotateBoardView();
             }
         });
     }
@@ -395,6 +433,7 @@ public class GUI {
     //All these listeners are in progress
     public void addCheckboxListeners() {
         for (int i = 0; i < meldCheckboxes.size(); i++) {
+            //Allows you to check for individual checkboxes (meldCheckBoxes.get(index))
             Integer index = i;
 
             meldCheckboxes.get(i).addActionListener(new ActionListener() {
@@ -410,6 +449,7 @@ public class GUI {
         }
     }
 
+    //Not finished
     public boolean checkForProperCombo() {
         Integer checkBoxCount = 0;
         boolean isBankable = false;
@@ -440,7 +480,7 @@ public class GUI {
                 
                 animateRoll();
 
-                Timer delayTimer = new Timer(1800, new ActionListener() {
+                Timer delayTimer = new Timer(1750, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e2) {
                         //Allows a player to pick which die they want to try and combo
