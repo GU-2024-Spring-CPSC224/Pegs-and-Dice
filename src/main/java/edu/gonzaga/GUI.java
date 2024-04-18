@@ -11,7 +11,9 @@ public class GUI {
     JFrame mainWindowFrame;
 
     Player player;
-    Integer roundCount;
+    Integer roundCount = 0;
+    Integer comboChosen = 0;
+    Integer turnCount = 0;
 
     //Fulfills requirements for player and round information
     JTextField playerNameTextField = new JTextField();
@@ -27,14 +29,13 @@ public class GUI {
     JButton rollButton = new JButton("Roll");
     JButton bankButton = new JButton("Bank");
     JButton endTurnButton = new JButton("End Turn");
+    JButton chooseComboButton = new JButton("Pick Combo");
     DiceImages diceImages = new DiceImages("media/");
 
     //Board, player/round info, dice display, and checkboxes
     JPanel boardPanel = new JPanel();
     JPanel playerInfoPanel = new JPanel();
     JPanel diceMeldAndRollControlPanel = new JPanel();
-
-    Integer comboChosen;
 
     void setupGUI() {
         //Main Window
@@ -222,13 +223,14 @@ public class GUI {
         JPanel newPanel = new JPanel();
 
         //Adding the buttons to a list
+        buttons.add(this.chooseComboButton);
         buttons.add(this.bankButton);
         buttons.add(this.rollButton);
         buttons.add(this.endTurnButton);
 
         //Setting up the panel layout, size, and color
-        newPanel.setLayout(new GridLayout(1, 3, 15, 15));
-        newPanel.setPreferredSize(new Dimension(300, 50));
+        newPanel.setLayout(new GridLayout(1, 4, 15, 15));
+        newPanel.setPreferredSize(new Dimension(475, 50));
         newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
         for (JButton button : buttons) {
@@ -243,6 +245,7 @@ public class GUI {
         }
 
         //Adding buttons to the panel
+        newPanel.add(this.chooseComboButton);
         newPanel.add(this.bankButton);
         newPanel.add(this.rollButton);
         newPanel.add(this.endTurnButton);
@@ -349,10 +352,12 @@ public class GUI {
         endTurnButtonListener();
         playerNameTextFieldListener();
         addCheckboxListeners();
+        chooseComboButtonListener();
 
         rollButton.setEnabled(false);
         bankButton.setEnabled(false);
         //endTurnButton.setEnabled(false);
+        chooseComboButton.setEnabled(false);
         disableCheckBoxes();
 
         mainWindowFrame.setVisible(true);
@@ -383,7 +388,32 @@ public class GUI {
                 }
             }
         }
-    }    
+    }
+
+    //All these listeners are in progress
+    public void chooseComboButtonListener() {
+        chooseComboButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Setting the round's current combo
+                comboChosen = getMeldCheckBoxesSum();
+
+                chooseComboButton.setEnabled(false);
+            }
+        });
+    }
+
+    private Integer getMeldCheckBoxesSum() {
+        Integer meldSum = 0;
+
+        for (int i = 0; i < meldCheckboxes.size(); i++) {
+            if (meldCheckboxes.get(i).isSelected()) {
+                meldSum += player.getPlayerHand()[i].getSideUp();
+            }
+        }
+
+        return meldSum;
+    }
 
     //All these listeners are in progress
     public void playerNameTextFieldListener() {
@@ -439,10 +469,13 @@ public class GUI {
             meldCheckboxes.get(i).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (checkForProperCombo()) {
+                    if (checkForProperCombo() && turnCount == 1) {
+                        chooseComboButton.setEnabled(true);
+                    } else if (checkForProperCombo() && turnCount != 1) {
                         bankButton.setEnabled(true);
                     } else {
                         bankButton.setEnabled(false);
+                        chooseComboButton.setEnabled(false);
                     }
                 }
             });
@@ -488,6 +521,8 @@ public class GUI {
 
                         //A player can't re-roll before they've selected a combo
                         rollButton.setEnabled(false);
+                        //Each roll counts as a "turn" rather than a "round"
+                        turnCount++;
                     }
                 });
 
