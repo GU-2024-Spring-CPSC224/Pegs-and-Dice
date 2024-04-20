@@ -98,4 +98,23 @@ public class Player {
             }
         }
     }
+
+    private void sortHand() {
+        for(int i = 0; i < playerHand.length; i++) {
+            for(int j = 0; j < playerHand.length - i - 1; j++) {
+                if(playerHand[j].getSideUp() > playerHand[j + 1].getSideUp()) {
+                    Die temp = playerHand[i];
+                    playerHand[j] = playerHand[j + 1];
+                    playerHand[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    private void displayHand() {
+        for(int i = 0; i < playerHand.length; i++) {
+            System.out.print(playerHand[i].getSideUp() + " ");
+        }
+        System.out.println();
+    }
 }
