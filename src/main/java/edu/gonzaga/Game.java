@@ -1,18 +1,29 @@
 package edu.gonzaga;
 
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class Game {
     private ArrayList<Player> players;
-    private Integer roundCount;
+    private JFrame mainFrame;
 
     public Game() {
         this.players = new ArrayList<>();
-        this.roundCount = 0;
+
+        this.mainFrame = new JFrame("Olivares Enthusiasts Pegs & Dice");
+        this.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public Game(JFrame mainFrame) {
+        this.players = new ArrayList<>();
+        this.mainFrame = mainFrame;
+
+        //Must clear the old content before putting on the new panel
+        this.mainFrame.getContentPane().removeAll();
     }
 
     public void getHowManyPlayers() {
-        StartScreenGUI startScreen = new StartScreenGUI();
+        StartScreenGUI startScreen = new StartScreenGUI(mainFrame);
         startScreen.runStartScreenGUI();
     }
 
@@ -29,9 +40,8 @@ public class Game {
     }
 
     public void playGame() {
-        for (Player player : players) {
-            player.getPlayerGUI().runGUI(player, ++roundCount);
-        }
+        GUI game = new GUI(mainFrame);
+        game.runGUI(players);
     }
 
     //Does work, check the testing file
