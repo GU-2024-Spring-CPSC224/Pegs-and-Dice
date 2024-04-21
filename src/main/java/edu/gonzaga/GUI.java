@@ -82,7 +82,7 @@ public class GUI {
         mainWindowFrame.pack();
 
         //Sets to center of the screen
-        mainWindowFrame.setLocationRelativeTo(null);
+        mainWindowFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
     }
 
     private JPanel genBoardPanel() {

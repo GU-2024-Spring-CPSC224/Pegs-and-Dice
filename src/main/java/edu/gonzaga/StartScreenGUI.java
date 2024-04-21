@@ -42,7 +42,7 @@ public class StartScreenGUI {
         mainBannerWindow.getContentPane().add(mainPanel);
         mainBannerWindow.pack();
 
-        mainBannerWindow.setLocationRelativeTo(null);
+        mainBannerWindow.setExtendedState(JFrame.MAXIMIZED_BOTH); 
     }
 
     public JPanel genBorderPanel() {
