@@ -12,7 +12,6 @@
  */
 package edu.gonzaga;
 
-
 /** Main program class for launching your team's program. */
 public class MainGame {
     public static void main(String[] args) {
