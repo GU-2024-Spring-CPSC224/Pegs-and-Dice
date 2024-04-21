@@ -6,14 +6,23 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 public class GUI {
     JFrame mainWindowFrame;
+    JPanel mainPanel = new JPanel();
 
-    Player player;
-    Integer roundCount = 0;
-    Integer comboChosen = 0;
-    Integer turnCount = 0;
+    //List of players and current player index
+    ArrayList<Player> players = new ArrayList<>();
+
+    //Don't have to do it this way, just a thought
+    Iterator<Player> playerIterator = players.iterator();
+     
+    Integer currentPlayerIndex;
+    
+    Integer roundCount;
+    Integer comboChosen;
+    Integer turnCount;
 
     //Fulfills requirements for player and round information
     JTextField playerNameTextField = new JTextField();
@@ -37,11 +46,20 @@ public class GUI {
     JPanel playerInfoPanel = new JPanel();
     JPanel diceMeldAndRollControlPanel = new JPanel();
 
+    public GUI(JFrame mainFrame) {
+        //Lets us only use 1 JFrame
+        this.mainWindowFrame = mainFrame;
+
+        //Default values
+        this.roundCount = 0;
+        this.comboChosen = 0;
+        this.turnCount = 0;
+        this.currentPlayerIndex = 0;
+    }
+
     void setupGUI() {
         //Main Window
-        this.mainWindowFrame = new JFrame("Olivares Enthusiasts Pegs & Dice");
-        this.mainWindowFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.mainWindowFrame.setLocation(100, 100);
+        mainPanel.setLayout(new BorderLayout());
 
         //Adds the main board to the GUI
         this.boardPanel = genBoardPanel();
@@ -52,15 +70,19 @@ public class GUI {
         //Adds the dice, meld, and buttons to the GUI
         this.diceMeldAndRollControlPanel = genMeldAndRollControlPanel();
 
-        mainWindowFrame.getContentPane().add(BorderLayout.NORTH, this.playerInfoPanel);
-        mainWindowFrame.getContentPane().add(BorderLayout.CENTER, this.boardPanel);
-        mainWindowFrame.getContentPane().add(BorderLayout.SOUTH, this.diceMeldAndRollControlPanel);
-        mainWindowFrame.getContentPane().add(BorderLayout.EAST, sidePanel());
-        mainWindowFrame.getContentPane().add(BorderLayout.WEST, sidePanel());
+        //Adding components to the main panel
+        mainPanel.add(BorderLayout.NORTH, this.playerInfoPanel);
+        mainPanel.add(BorderLayout.CENTER, this.boardPanel);
+        mainPanel.add(BorderLayout.SOUTH, this.diceMeldAndRollControlPanel);
+        mainPanel.add(BorderLayout.EAST, sidePanel());
+        mainPanel.add(BorderLayout.WEST, sidePanel());
+        
+        //Adding the panel to the main Frame
+        mainWindowFrame.getContentPane().add(mainPanel);
         mainWindowFrame.pack();
 
-        //Starts the window at fullscreen
-        mainWindowFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //Sets to center of the screen
+        mainWindowFrame.setLocationRelativeTo(null);
     }
 
     private JPanel genBoardPanel() {
@@ -105,7 +127,7 @@ public class GUI {
                 newPanel.add(button);
 
                 //Setting the "pegs"
-                if (player.getPlayerBoard()[row][col] == true && col != 0) {
+                if (players.get(currentPlayerIndex).getPlayerBoard()[row][col] == true && col != 0) {
                     button.setForeground(Color.WHITE.darker().darker());
                 }
 
@@ -186,7 +208,7 @@ public class GUI {
         playerNameTextField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
         playerNameTextField.setBackground(Color.GRAY.darker().darker());
         playerNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
-        playerNameTextField.setText(player.getPlayerName());
+        playerNameTextField.setText(players.get(currentPlayerIndex).getPlayerName());
 
         newPanel.add(playerNameTextField);
         
@@ -339,10 +361,9 @@ public class GUI {
         }
     }
 
-    //This does not have to be the only way to pass player info (probably needs to change anyways)
-    void runGUI(Player player, Integer roundCount) {
-        this.player = player;
-        this.roundCount = roundCount;
+    void runGUI(ArrayList<Player> players) {
+        //Our list of players
+        this.players = players;
         
         setupGUI();
 
@@ -356,7 +377,7 @@ public class GUI {
 
         rollButton.setEnabled(false);
         bankButton.setEnabled(false);
-        //endTurnButton.setEnabled(false);
+        endTurnButton.setEnabled(false);
         chooseComboButton.setEnabled(false);
         disableCheckBoxes();
 
@@ -374,9 +395,9 @@ public class GUI {
      */
     public void rotateBoardView() {
         Integer index = 0;
-        boolean[][] playerBoard = player.getPlayerBoard();
+        boolean[][] playerBoard = players.get(currentPlayerIndex).getPlayerBoard();
 
-        playerNameTextField.setText(player.getPlayerName());
+        playerNameTextField.setText(players.get(currentPlayerIndex).getPlayerName());
     
         for (int row = 0; row < 7; row++) {
             for (int col = 0; col < 13; col++) {
@@ -408,7 +429,7 @@ public class GUI {
 
         for (int i = 0; i < meldCheckboxes.size(); i++) {
             if (meldCheckboxes.get(i).isSelected()) {
-                meldSum += player.getPlayerHand()[i].getSideUp();
+                meldSum += players.get(currentPlayerIndex).getPlayerHand()[i].getSideUp();
             }
         }
 
@@ -426,7 +447,7 @@ public class GUI {
                     playerName = "Unknown Player";
                 }
 
-                player.setPlayerName(playerName);
+                players.get(currentPlayerIndex).setPlayerName(playerName);
                 playerNameTextField.setText(playerName);
 
                 rollButton.setEnabled(true);
@@ -449,12 +470,13 @@ public class GUI {
         endTurnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Sets the board to the "winning" state for debug purposes
-                for (int col = 0; col < 13; col++) {
-                    player.getPlayerBoard()[0][col] = true;
-                }
+                // //Sets the board to the "winning" state for debug purposes
+                // for (int col = 0; col < 13; col++) {
+                //     players.get(currentPlayerIndex).getPlayerBoard()[0][col] = true;
+                // }
 
                 //Should update to the next player
+                //Maybe playerIterator.next()??????
                 rotateBoardView();
             }
         });
@@ -491,7 +513,7 @@ public class GUI {
 
         for (int i = 0; i < meldCheckboxes.size(); i++) {
             if (meldCheckboxes.get(i).isSelected()) {
-                meldSum += player.getPlayerHand()[i].getSideUp();
+                meldSum += players.get(currentPlayerIndex).getPlayerHand()[i].getSideUp();
                 checkBoxCount++;
             }
 
@@ -509,7 +531,7 @@ public class GUI {
         rollButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                player.updatePlayerHand();
+                players.get(currentPlayerIndex).updatePlayerHand();
                 
                 animateRoll();
 
@@ -550,7 +572,7 @@ public class GUI {
                             if (rollCount >= 15) {
                                 ((Timer) e.getSource()).stop();
                                 
-                                diceButtons.get(index).setIcon(diceImages.getDieImage(player.getPlayerHand()[index].getSideUp()));
+                                diceButtons.get(index).setIcon(diceImages.getDieImage(players.get(currentPlayerIndex).getPlayerHand()[index].getSideUp()));
                             }
                         }
                     });

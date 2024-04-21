@@ -6,24 +6,14 @@ public class Player {
     private Die[] playerHand;
     private boolean[][] playerBoard;
 
-    //IS NOT FINAL CAN CHANGE LOGIC
-    private GUI playerGUI;
-
     public Player() {
         this.playerName = "";
         this.playerHand = makeDie();
         this.playerBoard = makeBoard();
-        
-        //IS NOT FINAL CAN CHANGE LOGIC
-        this.playerGUI = new GUI();
     }
 
     public Die[] getPlayerHand() {
         return this.playerHand;
-    }
-
-    public GUI getPlayerGUI() {
-        return this.playerGUI;
     }
 
     public void setPlayerName(String name) {

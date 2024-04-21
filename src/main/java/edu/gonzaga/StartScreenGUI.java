@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 public class StartScreenGUI {
     JFrame mainBannerWindow;
+    JPanel mainPanel = new JPanel();
 
     JLabel getNumPlayersLabel = new JLabel();
     JButton singleButton = new JButton();
@@ -23,20 +24,25 @@ public class StartScreenGUI {
     //Dice images
     private DiceImages diceImages = new DiceImages("media/");
 
-    void setupStartScreenGUI() {
-        this.mainBannerWindow = new JFrame("Olivares Enthusiasts Pegs & Dice");
-        this.mainBannerWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.mainBannerWindow.setLocation(100, 100);
+    //Lets us only use 1 JFrame
+    public StartScreenGUI(JFrame mainFrame) {
+        this.mainBannerWindow = mainFrame;
+    }
 
+    void setupStartScreenGUI() {
         this.bannerFrame = genBannerFrame();
         this.playerInfoPanel = genGetPlayerInfoPanel();
+        this.mainPanel.setLayout(new BorderLayout());
 
-        mainBannerWindow.getContentPane().add(BorderLayout.NORTH, this.bannerFrame);
-        mainBannerWindow.getContentPane().add(BorderLayout.CENTER, this.playerInfoPanel);
+        //Adding elements to the main panel
+        mainPanel.add(BorderLayout.NORTH, this.bannerFrame);
+        mainPanel.add(BorderLayout.CENTER, this.playerInfoPanel);
+        
+        //Putting the main panel on our Frame
+        mainBannerWindow.getContentPane().add(mainPanel);
         mainBannerWindow.pack();
 
-        //Starts the window at fullscreen
-        mainBannerWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        mainBannerWindow.setLocationRelativeTo(null);
     }
 
     public JPanel genBorderPanel() {
@@ -222,13 +228,11 @@ public class StartScreenGUI {
     }
 
     public void transitionToGame(Integer numPlayers) {
-        Game game = new Game();
+        Game game = new Game(mainBannerWindow);
 
         game.initializePlayers(numPlayers); 
         game.playGame();
-
-        mainBannerWindow.dispose();
-    }    
+    }
 
     public void singleButtonEventListener() {
         singleButton.addActionListener(new ActionListener() {
