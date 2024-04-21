@@ -34,6 +34,9 @@ public class GUI {
     
     //Contains board buttons
     ArrayList<JButton> pegHoles = new ArrayList<>();
+
+    // label
+    JLabel nameLabel = new JLabel("Name: ");
     
     JButton rollButton = new JButton("Roll");
     JButton bankButton = new JButton("Bank");
@@ -210,6 +213,10 @@ public class GUI {
         playerNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
         playerNameTextField.setText(players.get(currentPlayerIndex).getPlayerName());
 
+        nameLabel.setFont(new Font("Montserrat", Font.PLAIN, 25));
+        nameLabel.setForeground(Color.WHITE);
+
+        newPanel.add(nameLabel);
         newPanel.add(playerNameTextField);
         
         return newPanel;
