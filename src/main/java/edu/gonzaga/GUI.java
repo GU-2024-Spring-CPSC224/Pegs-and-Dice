@@ -375,12 +375,12 @@ public class GUI {
         setupGUI();
 
         //Calling our event listeners after we setup the GUI
-        rollButtonListener();
-        bankButtonListener();
-        endTurnButtonListener();
+        // rollButtonListener();
+        // bankButtonListener();
+        // endTurnButtonListener();
         playerNameTextFieldListener();
-        addCheckboxListeners();
-        chooseComboButtonListener();
+        // addCheckboxListeners();
+        // chooseComboButtonListener();
 
         rollButton.setEnabled(false);
         bankButton.setEnabled(false);
@@ -389,6 +389,13 @@ public class GUI {
         disableCheckBoxes();
 
         mainWindowFrame.setVisible(true);
+    }
+
+    public void printPlayerNames() {
+        for(Player player : players) {
+            System.out.print(player.getPlayerName() + " ");
+        }
+        System.out.println();
     }
 
     /**
@@ -456,6 +463,7 @@ public class GUI {
 
                 players.get(currentPlayerIndex).setPlayerName(playerName);
                 playerNameTextField.setText(playerName);
+                printPlayerNames();
 
                 rollButton.setEnabled(true);
             }
