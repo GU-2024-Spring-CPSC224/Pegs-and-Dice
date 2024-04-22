@@ -1,3 +1,13 @@
+/**
+ * This class creates a die object which can be rolled, set, and compared.
+ * 
+ * CPSC 224, Spring 2024
+ * Final Project
+ * 
+ * @author Aaron Crandall
+ * @version v1.0 4/22/24
+ */
+
 /* (C)2021 */
 package edu.gonzaga;
 
@@ -7,7 +17,6 @@ package edu.gonzaga;
 
 import java.util.Random;
 
-// STOLEN FROM CRANDALL
 public class Die implements Comparable<Die> {
     private Integer sideUp; // Current die 'value' in range 1..numSides
     private Integer numSides; // Sides on the die (should be 1...INF integer)

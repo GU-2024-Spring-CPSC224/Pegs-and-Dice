@@ -1,3 +1,13 @@
+/**
+ * This class gets and scales the images of the dice to be used in the game.
+ * 
+ * CPSC 224, Spring 2024
+ * Final Project
+ * 
+ * @author Aaron Crandall
+ * @version v1.0 4/22/24
+ */
+
 package edu.gonzaga;
 
 import java.awt.*;
@@ -8,7 +18,6 @@ import javax.swing.*;
 import javax.imageio.*;
 import java.util.ArrayList;
 
-// STOLEN FROM CRANDALL
 public class DiceImages {
     ArrayList<ImageIcon> images;
 
