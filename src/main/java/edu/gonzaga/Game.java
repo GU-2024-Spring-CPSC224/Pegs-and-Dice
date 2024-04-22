@@ -17,9 +17,10 @@ public class Game {
     public Game(JFrame mainFrame) {
         this.players = new ArrayList<>();
         this.mainFrame = mainFrame;
+    }
 
-        //Must clear the old content before putting on the new panel
-        this.mainFrame.getContentPane().removeAll();
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 
     public void getHowManyPlayers() {
@@ -41,6 +42,10 @@ public class Game {
 
     public void playGame() {
         GUI game = new GUI(mainFrame);
+
+        //Clearing the frame
+        mainFrame.getContentPane().removeAll();
+
         game.runGUI(players);
     }
 

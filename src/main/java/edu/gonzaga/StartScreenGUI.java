@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class StartScreenGUI {
+    Game game;
+
     JFrame mainBannerWindow;
     JPanel mainPanel = new JPanel();
 
@@ -21,12 +23,15 @@ public class StartScreenGUI {
     JPanel bottomPanel = new JPanel();
     JPanel bannerFrame = new JPanel();
 
+    private Integer textFieldCount;
+
     //Dice images
     private DiceImages diceImages = new DiceImages("media/");
 
     //Lets us only use 1 JFrame
     public StartScreenGUI(JFrame mainFrame) {
         this.mainBannerWindow = mainFrame;
+        this.textFieldCount = 0;
     }
 
     void setupStartScreenGUI() {
@@ -227,18 +232,135 @@ public class StartScreenGUI {
         mainBannerWindow.setVisible(true);
     }
 
-    public void transitionToGame(Integer numPlayers) {
-        Game game = new Game(mainBannerWindow);
+    public void initializeGame(Integer numPlayers) {
+        this.game = new Game(mainBannerWindow);
 
         game.initializePlayers(numPlayers); 
-        game.playGame();
+    }
+
+    public void enterPlayerNames(Integer numPlayers) {
+        JPanel newMainPanel = new JPanel();
+        JPanel getPlayerNamesPanel = genGetPlayerNamesPanel(numPlayers);
+
+        newMainPanel.setLayout(new BorderLayout());
+
+        newMainPanel.add(BorderLayout.NORTH, this.bannerFrame);
+        newMainPanel.add(BorderLayout.CENTER, getPlayerNamesPanel);
+
+        //Resetting the frame
+        mainBannerWindow.getContentPane().removeAll();
+        
+        //Putting the new main panel on our Frame
+        mainBannerWindow.getContentPane().add(newMainPanel);
+        mainBannerWindow.revalidate();
+
+        mainBannerWindow.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+    }
+
+    public JPanel genGetPlayerNamesPanel(Integer numPlayers) {
+        JPanel newPanel = new JPanel();
+        JPanel gridPanel = new JPanel();
+        JPanel enterNamesTextPanel = new JPanel();
+
+        JLabel enterNamesLabel = new JLabel();
+
+        //Panel Layouts
+        gridPanel.setLayout(new GridLayout(2, numPlayers));
+        newPanel.setLayout(new BorderLayout());
+
+        //Panel Backgrounds
+        gridPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
+        newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
+        enterNamesTextPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
+
+        //Setting up text above content
+        enterNamesLabel.setFont(new Font("Times New Roman", Font.PLAIN, 45));
+        enterNamesLabel.setText("Enter Name Below");
+        enterNamesLabel.setForeground(Color.WHITE);
+
+        //Setting up the player numbering
+        for (int i = 0; i < numPlayers; i++) {
+            Integer playerNum = i + 1;
+            JLabel playerNumberLabel = new JLabel();
+
+            playerNumberLabel.setFont(new Font("Montserrat", Font.PLAIN, 25));
+            playerNumberLabel.setForeground(Color.WHITE);
+            playerNumberLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            playerNumberLabel.setText("Player " + playerNum);
+
+            gridPanel.add(playerNumberLabel);
+        }
+
+        //Plural
+        if (numPlayers != 1) {
+            enterNamesLabel.setText("Enter Names Below");
+        }
+
+        //Dynamic text fields for different player counts
+        for (int i = 0; i < numPlayers; i++) {
+            Integer index = i;
+            JTextField playerTextField = new JTextField();
+            JPanel textFields = new JPanel();
+
+            //Layout and background
+            textFields.setLayout(new FlowLayout(FlowLayout.CENTER));
+            textFields.setBackground(Color.GRAY.darker().darker().darker().darker());
+
+            playerTextField.setColumns(10);
+            playerTextField.setFont(new Font("Montserrat", Font.PLAIN, 25));
+            playerTextField.setForeground(Color.WHITE);
+            playerTextField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+            playerTextField.setBackground(Color.GRAY.darker().darker());
+            playerTextField.setHorizontalAlignment(SwingConstants.CENTER);
+
+            // Add a listener for each text field
+            playerTextField.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Integer unknownCounter = index + 1;
+
+                    String playerName = playerTextField.getText().trim();
+
+                    if (playerName.isEmpty()) {
+                        playerTextField.setText("Unknown Player " + unknownCounter);
+                        playerName = playerTextField.getText().trim();
+                    }
+                    
+                    //Setting the player names
+                    game.getPlayers().get(index).setPlayerName(playerName);
+
+                    //Can't change name after they've entered
+                    playerTextField.setEditable(false);
+
+                    //Updating the counter
+                    textFieldCount++;
+                    
+                    //If the names have been set then play the game
+                    if (textFieldCount == numPlayers) {
+                        game.playGame();
+                    }
+                }
+            });
+
+            textFields.add(playerTextField);
+
+            gridPanel.add(textFields);
+        }
+
+        enterNamesTextPanel.add(enterNamesLabel);
+
+        newPanel.add(enterNamesTextPanel, BorderLayout.NORTH);
+        newPanel.add(gridPanel, BorderLayout.CENTER);
+
+        return newPanel;
     }
 
     public void singleButtonEventListener() {
         singleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                transitionToGame(1);
+                initializeGame(1);
+                enterPlayerNames(1);
             }
         });
     }
@@ -247,7 +369,9 @@ public class StartScreenGUI {
         doubleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                transitionToGame(2);
+                initializeGame(2);
+                enterPlayerNames(2);
+
             }
         });
     }
@@ -256,7 +380,8 @@ public class StartScreenGUI {
         tripleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                transitionToGame(3);
+                initializeGame(3);
+                enterPlayerNames(3);
             }
         });
     }
@@ -265,7 +390,8 @@ public class StartScreenGUI {
         quadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                transitionToGame(4);
+                initializeGame(4);
+                enterPlayerNames(4);
             }
         });
     }
