@@ -7,9 +7,13 @@
  * 
  * Contributors:
  * 
+ * Evan Delanty
+ * David Sosa
+ * Matt Benson
  * 
- * Copyright: 2023
+ * Copyright: 2024
  */
+
 package edu.gonzaga;
 
 /** Main program class for launching your team's program. */

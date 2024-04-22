@@ -1,3 +1,15 @@
+/**
+ * This class acts as the main GUI for the actual game.
+ * It includes components such as the board, player name text field, round count, and anything on the screen.
+ * Contains event and focus listeners which take in user input.
+ * 
+ * CPSC 224, Spring 2024
+ * Final Project
+ * 
+ * @authors Evan Delanty, David Sosa, Matt Benson
+ * @version v1.0 4/22/24
+ */
+
 package edu.gonzaga;
 
 import javax.swing.*;
@@ -6,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
 
 public class GUI {
     JFrame mainWindowFrame;
@@ -14,15 +25,14 @@ public class GUI {
 
     //List of players and current player index
     ArrayList<Player> players = new ArrayList<>();
-
-    //Don't have to do it this way, just a thought
-    Iterator<Player> playerIterator = players.iterator();
      
     Integer currentPlayerIndex;
     
+    //Information should be used in the technical side of the game
+    Integer numPlayers;
     Integer roundCount;
     Integer comboChosen;
-    Integer turnCount;
+    Integer rollCount;
 
     //Fulfills requirements for player and round information
     JTextField playerNameTextField = new JTextField();
@@ -51,9 +61,10 @@ public class GUI {
         this.mainWindowFrame = mainFrame;
 
         //Default values
+        this.numPlayers = 0;
         this.roundCount = 1;
         this.comboChosen = 0;
-        this.turnCount = 0;
+        this.rollCount = 0;
         this.currentPlayerIndex = 0;
     }
 
@@ -79,7 +90,9 @@ public class GUI {
         
         //Adding the panel to the main Frame
         mainWindowFrame.getContentPane().add(mainPanel);
+        mainWindowFrame.pack();
         mainWindowFrame.revalidate();
+        mainWindowFrame.repaint();
 
         //Sets to center of the screen
         mainWindowFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
@@ -252,17 +265,13 @@ public class GUI {
 
         //Setting up the panel layout, size, and color
         newPanel.setLayout(new GridLayout(1, 4, 15, 15));
-        newPanel.setPreferredSize(new Dimension(475, 50));
+        newPanel.setPreferredSize(new Dimension(600, 55));
         newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
         for (JButton button : buttons) {
-            //Changing button color
             button.setBackground(Color.GRAY.darker());
-            //Changing button text color
             button.setForeground(Color.WHITE);
-            //Changing the button border
-            button.setBorderPainted(false);
-            //Changing button focus
+            button.setBorderPainted(false);        
             button.setFocusPainted(false);
         }
 
@@ -341,6 +350,13 @@ public class GUI {
         return newPanel;
     }
 
+    /**
+     * setDiceDisplay()
+     * 
+     * Randomizes the dice at the start of the game for the display.
+     * 
+     * @return void
+     */
     private void setDiceDisplay() {
         Random random = new Random();
 
@@ -349,21 +365,47 @@ public class GUI {
         }
     }
 
-    public void disableCheckBoxes() {
+    /**
+     * disableCheckBoxes()
+     * 
+     * Sets each checkbox of the meld to false.
+     * 
+     * @return void
+     */
+    private void disableCheckBoxes() {
         for (JCheckBox checkBox : meldCheckboxes) {
             checkBox.setEnabled(false);
         }
     }
 
-    public void enableCheckBoxes() {
+    /**
+     * enableCheckBoxes()
+     * 
+     * Sets each checkbox of the meld to true.
+     * 
+     * @return void
+     */
+    private void enableCheckBoxes() {
         for (JCheckBox checkBox : meldCheckboxes) {
             checkBox.setEnabled(true);
         }
     }
 
+    /**
+     * runGUI()
+     * 
+     * Runs the setup GUI function which adds each panel to the frame.
+     * Calls each event listener for all our buttons.
+     * Disables most functions at the start of the game.
+     * Sets the main frame to be visible.
+     * 
+     * @param players Array list of players created at the start of the game
+     * @return void
+     */
     void runGUI(ArrayList<Player> players) {
         //Our list of players
         this.players = players;
+        this.numPlayers = players.size();
         
         setupGUI();
 
@@ -376,7 +418,7 @@ public class GUI {
 
         rollButton.setEnabled(true);
         bankButton.setEnabled(false);
-        endTurnButton.setEnabled(false);
+        //endTurnButton.setEnabled(false);
         chooseComboButton.setEnabled(false);
         playerNameTextField.setEditable(false);
         disableCheckBoxes();
@@ -393,12 +435,15 @@ public class GUI {
      * 
      * @return void
      */
-    public void rotateBoardView() {
+    private void updateBoardView() {
         Integer index = 0;
         boolean[][] playerBoard = players.get(currentPlayerIndex).getPlayerBoard();
 
+        //Updates the player name and round counter
         playerNameTextField.setText(players.get(currentPlayerIndex).getPlayerName());
-    
+        roundCountTextField.setText(roundCount.toString());
+        
+        //Iterates through each button and updates based on the boolean value of the board (true = peg), (false = hole)
         for (int row = 0; row < 7; row++) {
             for (int col = 0; col < 13; col++) {
                 JButton hole = pegHoles.get(index++);
@@ -412,7 +457,7 @@ public class GUI {
     }
 
     //All these listeners are in progress
-    public void chooseComboButtonListener() {
+    private void chooseComboButtonListener() {
         chooseComboButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -437,7 +482,7 @@ public class GUI {
     }
 
     //All these listeners are in progress
-    public void bankButtonListener() {
+    private void bankButtonListener() {
         bankButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -447,24 +492,33 @@ public class GUI {
     }
 
     //All these listeners are in progress
-    public void endTurnButtonListener() {
+    private void endTurnButtonListener() {
         endTurnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // //Sets the board to the "winning" state for debug purposes
-                // for (int col = 0; col < 13; col++) {
-                //     players.get(currentPlayerIndex).getPlayerBoard()[0][col] = true;
-                // }
+                //Reset the roll count
+                rollCount = 0;
 
-                //Should update to the next player
-                //Maybe playerIterator.next()??????
-                rotateBoardView();
+                //Code to switch player index
+                if (currentPlayerIndex == numPlayers - 1) {
+                    //If the current index equals the amount of players - 1 (offset) we need to decrement the index back to 0
+                    currentPlayerIndex -= numPlayers - 1;
+                    //This also implies that the round has gone through a full rotation
+                    roundCount++;
+                } else {
+                    currentPlayerIndex++;
+                }
+
+                //CALL A TECHNICAL UPDATE BOARD FUNCTION HERE (SET THE 2D ARRAY VALUES)
+
+                //Updates the board, player name, and round count VIEW
+                updateBoardView();
             }
         });
     }
 
     //All these listeners are in progress
-    public void addCheckboxListeners() {
+    private void addCheckboxListeners() {
         for (int i = 0; i < meldCheckboxes.size(); i++) {
             //Allows you to check for individual checkboxes (meldCheckBoxes.get(index))
             Integer index = i;
@@ -472,9 +526,9 @@ public class GUI {
             meldCheckboxes.get(i).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (checkForProperCombo() && turnCount == 1) {
+                    if (checkForProperCombo() && rollCount == 1) {
                         chooseComboButton.setEnabled(true);
-                    } else if (checkForProperCombo() && turnCount != 1) {
+                    } else if (checkForProperCombo() && rollCount != 1) {
                         bankButton.setEnabled(true);
                     } else {
                         bankButton.setEnabled(false);
@@ -486,7 +540,7 @@ public class GUI {
     }
 
     //Not finished
-    public boolean checkForProperCombo() {
+    private boolean checkForProperCombo() {
         Integer checkBoxCount = 0;
         boolean isBankable = false;
 
@@ -508,11 +562,13 @@ public class GUI {
         return isBankable;
     }
     
-    public void rollButtonListener() {
+    private void rollButtonListener() {
         rollButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                players.get(currentPlayerIndex).updatePlayerHand();
+                Player player = players.get(currentPlayerIndex);
+
+                player.updatePlayerHand();
                 
                 animateRoll();
 
@@ -524,8 +580,8 @@ public class GUI {
 
                         //A player can't re-roll before they've selected a combo
                         rollButton.setEnabled(false);
-                        //Each roll counts as a "turn" rather than a "round"
-                        turnCount++;
+                        //Update the roll counter
+                        rollCount++;
                     }
                 });
 
@@ -535,6 +591,14 @@ public class GUI {
         });
     }
 
+    /**
+     * animateRoll()
+     * 
+     * Uses a JTimer to imply a rolling motion when the roll button is pressed.
+     * Sets the final version of the dice images to the player hand.
+     * 
+     * @return void
+     */
     private void animateRoll() {
         for (int i = 0; i < diceButtons.size(); i++) {
             int index = i;
@@ -566,8 +630,38 @@ public class GUI {
         }
     }
 
+    /**
+     * setRandomDie()
+     * 
+     * Sets the die to random values during the rolling animation.
+     * 
+     * @return Random integer from 1 - 6
+     */
     private Integer setRandomDie() {
         Random random = new Random();
         return random.nextInt(6) + 1;
+    }
+
+    //LOGIC CAN CHANGE FOR THIS the .hasWon() works fine though.
+
+    /**
+     * checkForWin()
+     * 
+     * Checks for the win condition for any player
+     * 
+     * @return boolean isWin true if the player has won, false if not
+     */
+    private boolean checkForWin() {
+        boolean isWin = false;
+
+        for (Player player : players) {
+            if (player.hasWon()) {
+                isWin = true;
+
+                break;
+            }
+        }
+
+        return isWin;
     }
 }
