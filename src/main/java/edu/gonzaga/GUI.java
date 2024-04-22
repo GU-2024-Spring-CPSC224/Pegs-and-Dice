@@ -51,7 +51,7 @@ public class GUI {
         this.mainWindowFrame = mainFrame;
 
         //Default values
-        this.roundCount = 0;
+        this.roundCount = 1;
         this.comboChosen = 0;
         this.turnCount = 0;
         this.currentPlayerIndex = 0;
@@ -79,7 +79,7 @@ public class GUI {
         
         //Adding the panel to the main Frame
         mainWindowFrame.getContentPane().add(mainPanel);
-        mainWindowFrame.pack();
+        mainWindowFrame.revalidate();
 
         //Sets to center of the screen
         mainWindowFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
@@ -371,14 +371,14 @@ public class GUI {
         rollButtonListener();
         bankButtonListener();
         endTurnButtonListener();
-        playerNameTextFieldListener();
         addCheckboxListeners();
         chooseComboButtonListener();
 
-        rollButton.setEnabled(false);
+        rollButton.setEnabled(true);
         bankButton.setEnabled(false);
         endTurnButton.setEnabled(false);
         chooseComboButton.setEnabled(false);
+        playerNameTextField.setEditable(false);
         disableCheckBoxes();
 
         mainWindowFrame.setVisible(true);
@@ -434,25 +434,6 @@ public class GUI {
         }
 
         return meldSum;
-    }
-
-    //All these listeners are in progress
-    public void playerNameTextFieldListener() {
-        playerNameTextField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String playerName = playerNameTextField.getText().trim();
-
-                if (playerName.isEmpty()) {
-                    playerName = "Unknown Player";
-                }
-
-                players.get(currentPlayerIndex).setPlayerName(playerName);
-                playerNameTextField.setText(playerName);
-
-                rollButton.setEnabled(true);
-            }
-        });
     }
 
     //All these listeners are in progress
