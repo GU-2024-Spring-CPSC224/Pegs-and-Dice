@@ -101,7 +101,7 @@ public class StartScreenGUI {
         title.add(titleLabel);
 
         ImageIcon banner = new ImageIcon("media/banner.png");
-        Image scaledImage = banner.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
+        Image scaledImage = banner.getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
         JLabel bannerLabel = new JLabel(scaledIcon);
@@ -334,7 +334,7 @@ public class StartScreenGUI {
         //Putting the new main panel on our Frame
         mainBannerWindow.getContentPane().add(newMainPanel);
         mainBannerWindow.revalidate();
-
+        
         mainBannerWindow.setExtendedState(JFrame.MAXIMIZED_BOTH); 
     }
 
@@ -354,8 +354,8 @@ public class StartScreenGUI {
         JLabel enterNamesLabel = new JLabel();
 
         //Panel Layouts
-        gridPanel.setLayout(new GridLayout(2, numPlayers, -2750 / numPlayers, -135));
-        newPanel.setLayout(new BorderLayout(0, -135));
+        gridPanel.setLayout(new GridLayout(2, numPlayers, -2000 / numPlayers, -100));
+        newPanel.setLayout(new BorderLayout(0, -100));
 
         //Panel Backgrounds
         gridPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
