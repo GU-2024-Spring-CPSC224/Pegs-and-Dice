@@ -469,6 +469,16 @@ public class GUI {
         });
     }
 
+    private void handleRerolling() {
+        for(JCheckBox checkBox : meldCheckboxes) {
+            if(checkBox.isSelected()) {
+                
+                
+            }
+        }
+        players.get(currentPlayerIndex).reroll();
+    }
+
     private Integer getMeldCheckBoxesSum() {
         Integer meldSum = 0;
 

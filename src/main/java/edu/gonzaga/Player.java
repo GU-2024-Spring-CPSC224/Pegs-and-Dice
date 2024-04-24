@@ -190,6 +190,14 @@ public class Player {
         }
     }
 
+    public void reroll() {
+        for(int i = 0; i < playerHand.length; i++) {
+            Die die = new Die();
+            die.roll();
+            playerHand[i] = die;
+        }
+    }
+
     /**
      * sortHand()
      * 
