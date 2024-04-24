@@ -13,10 +13,13 @@
 
 package edu.gonzaga;
 
+import java.util.ArrayList;
+
 public class Player {
     //We need a name, hand, and board for each player
     private String playerName;
     private Die[] playerHand;
+    private ArrayList<Die> dice;
     private boolean[][] playerBoard;
 
     /**
@@ -30,6 +33,7 @@ public class Player {
         this.playerName = "";
         this.playerHand = makeDie();
         this.playerBoard = makeBoard();
+        this.dice = new ArrayList<>();
     }
 
     /**
@@ -224,8 +228,11 @@ public class Player {
      * 
      * @return void
      */
-    private void displayHand() {
+    public void displayHand() {
         for(int i = 0; i < playerHand.length; i++) {
+            if(playerHand[i] == null) {
+                continue;
+            }
             System.out.print(playerHand[i].getSideUp() + " ");
         }
         System.out.println();

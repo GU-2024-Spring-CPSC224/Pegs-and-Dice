@@ -463,6 +463,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //Setting the round's current combo
                 comboChosen = getMeldCheckBoxesSum();
+                handleRerolling();
 
                 chooseComboButton.setEnabled(false);
             }
@@ -470,14 +471,24 @@ public class GUI {
     }
 
     private void handleRerolling() {
+        int index = 0;
+        
         for(JCheckBox checkBox : meldCheckboxes) {
             if(checkBox.isSelected()) {
-                
-                
+                System.out.println(players.get(currentPlayerIndex).getPlayerHand()[index]);
+                System.out.println(index);
+                players.get(currentPlayerIndex).displayHand();
+                players.get(currentPlayerIndex).removeFromHand(index);
+                players.get(currentPlayerIndex).displayHand();
             }
+            index++;
         }
         players.get(currentPlayerIndex).reroll();
+        System.out.println("Player Hand After Reroll");
+        players.get(currentPlayerIndex).displayHand();
     }
+
+
 
     private Integer getMeldCheckBoxesSum() {
         Integer meldSum = 0;
@@ -553,7 +564,6 @@ public class GUI {
         }
     }
 
-    //Not finished
     private boolean checkForProperCombo() {
         Integer checkBoxCount = 0;
         boolean isBankable = false;
