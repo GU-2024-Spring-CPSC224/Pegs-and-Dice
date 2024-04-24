@@ -526,10 +526,14 @@ public class GUI {
             meldCheckboxes.get(i).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (checkForProperCombo() && rollCount == 1) {
-                        chooseComboButton.setEnabled(true);
-                    } else if (checkForProperCombo() && rollCount != 1) {
-                        bankButton.setEnabled(true);
+                    // checking to see whether or not the combo can be chosen
+                    if(checkForProperCombo()) {
+                        // checking to see if the combo button
+                        if(rollCount == 1) {
+                            chooseComboButton.setEnabled(true);
+                        } else {
+                            bankButton.setEnabled(true);
+                        }
                     } else {
                         bankButton.setEnabled(false);
                         chooseComboButton.setEnabled(false);
