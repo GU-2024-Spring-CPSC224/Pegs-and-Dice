@@ -14,6 +14,7 @@
 package edu.gonzaga;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Player {
     //We need a name, hand, and board for each player
@@ -209,7 +210,7 @@ public class Player {
      * 
      * @return void
      */
-    private void sortHand() {
+    public void sortHand() {
         for(int i = 0; i < playerHand.length; i++) {
             for(int j = 0; j < playerHand.length - i - 1; j++) {
                 if(playerHand[j].getSideUp() > playerHand[j + 1].getSideUp()) {
@@ -219,6 +220,10 @@ public class Player {
                 }
             }
         }
+    }
+
+    public void displayPlayerBoard() {
+
     }
 
     /**

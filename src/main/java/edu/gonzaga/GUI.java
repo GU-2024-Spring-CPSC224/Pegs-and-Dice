@@ -418,7 +418,7 @@ public class GUI {
 
         rollButton.setEnabled(true);
         bankButton.setEnabled(false);
-        //endTurnButton.setEnabled(false);
+        endTurnButton.setEnabled(false);
         chooseComboButton.setEnabled(false);
         playerNameTextField.setEditable(false);
         disableCheckBoxes();
@@ -463,32 +463,13 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //Setting the round's current combo
                 comboChosen = getMeldCheckBoxesSum();
-                handleRerolling();
 
                 chooseComboButton.setEnabled(false);
+                bankButton.setEnabled(true);
+
             }
         });
     }
-
-    private void handleRerolling() {
-        int index = 0;
-        
-        for(JCheckBox checkBox : meldCheckboxes) {
-            if(checkBox.isSelected()) {
-                System.out.println(players.get(currentPlayerIndex).getPlayerHand()[index]);
-                System.out.println(index);
-                players.get(currentPlayerIndex).displayHand();
-                players.get(currentPlayerIndex).removeFromHand(index);
-                players.get(currentPlayerIndex).displayHand();
-            }
-            index++;
-        }
-        players.get(currentPlayerIndex).reroll();
-        System.out.println("Player Hand After Reroll");
-        players.get(currentPlayerIndex).displayHand();
-    }
-
-
 
     private Integer getMeldCheckBoxesSum() {
         Integer meldSum = 0;
@@ -507,7 +488,18 @@ public class GUI {
         bankButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // adding functionality here
+                // assuming that you press on bank button and 
+
+                for(JCheckBox checkBox : meldCheckboxes) {
+                    if(checkBox.isSelected()) {
+                        checkBox.setEnabled(false);
+                    }
+                }
                 
+                // update player board
+                players.get(currentPlayerIndex);
+                updateBoardView();
             }
         });
     }
@@ -541,15 +533,12 @@ public class GUI {
     //All these listeners are in progress
     private void addCheckboxListeners() {
         for (int i = 0; i < meldCheckboxes.size(); i++) {
-            //Allows you to check for individual checkboxes (meldCheckBoxes.get(index))
-            Integer index = i;
 
             meldCheckboxes.get(i).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // checking to see whether or not the combo can be chosen
+                    // logic is a litte more concise.
                     if(checkForProperCombo()) {
-                        // checking to see if the combo button
                         if(rollCount == 1) {
                             chooseComboButton.setEnabled(true);
                         } else {
@@ -559,6 +548,9 @@ public class GUI {
                         bankButton.setEnabled(false);
                         chooseComboButton.setEnabled(false);
                     }
+
+                    // checkboxes also need to check if the checkboxes values, add up to, at least to the meldSum/combo chosen
+
                 }
             });
         }
@@ -567,7 +559,7 @@ public class GUI {
     private boolean checkForProperCombo() {
         Integer checkBoxCount = 0;
         boolean isBankable = false;
-
+        
         Integer meldSum = 0;
 
         for (int i = 0; i < meldCheckboxes.size(); i++) {
@@ -687,5 +679,18 @@ public class GUI {
         }
 
         return isWin;
+    }
+
+    /**
+     * clearCheckBoxes()
+     * 
+     * This method clears the checkboxes, that all it does, pretty straight forward
+     * 
+     * @return nothing
+     */
+    private void clearCheckBoxes() {
+        for(JCheckBox checkBox : meldCheckboxes) {
+            checkBox.setSelected(false);
+        }
     }
 }
