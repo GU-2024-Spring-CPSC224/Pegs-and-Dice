@@ -175,6 +175,17 @@ public class Player {
         return board;
     }
 
+    public void updateBoard(Integer comboChosen) {
+        for (int row = 0; row < 7; row++) {
+            for (int col = 0; col < 13; col++) {
+                if (col == comboChosen && playerBoard[row][col] == true && row != 0) {
+                    playerBoard[row - 1][comboChosen] = true;
+                    playerBoard[row][comboChosen] = false;
+                }
+            }
+        }
+    }
+
     /**
      * rollHand()
      * 

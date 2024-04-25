@@ -417,7 +417,7 @@ public class GUI {
         chooseComboButtonListener();
 
         rollButton.setEnabled(true);
-        bankButton.setEnabled(false);
+        //bankButton.setEnabled(false);
         //endTurnButton.setEnabled(false);
         chooseComboButton.setEnabled(false);
         playerNameTextField.setEditable(false);
@@ -447,6 +447,10 @@ public class GUI {
         for (int row = 0; row < 7; row++) {
             for (int col = 0; col < 13; col++) {
                 JButton hole = pegHoles.get(index++);
+
+                if (playerBoard[row][col] == false && col != 0 && row != 6) {
+                    hole.setForeground(Color.BLACK);
+                }
     
                 //Setting the "pegs"
                 if (playerBoard[row][col] == true && col != 0) {
@@ -486,7 +490,9 @@ public class GUI {
         bankButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                comboChosen = 12; //SET THIS DURING "PICK COMBO"
+                players.get(currentPlayerIndex).updateBoard(comboChosen);
+                updateBoardView();
             }
         });
     }
