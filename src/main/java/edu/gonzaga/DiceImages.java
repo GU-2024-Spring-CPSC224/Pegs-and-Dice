@@ -4,7 +4,7 @@
  * CPSC 224, Spring 2024
  * Final Project
  * 
- * @author Aaron Crandall
+ * @author Aaron Crandall, Gonzaga University
  * @version v1.0 4/22/24
  */
 

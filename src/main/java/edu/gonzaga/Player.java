@@ -154,6 +154,13 @@ public class Player {
         return dice;
     }
 
+    /**
+     * resetHand()
+     * 
+     * Resets the player hand by filling it with non-null values
+     * 
+     * @return void
+     */
     public void resetHand() {
         Random random = new Random();
 
@@ -185,6 +192,32 @@ public class Player {
         return board;
     }
 
+    /**
+     * resetBoard()
+     * 
+     * Resets a player board to the default position
+     * 
+     * @return void
+     */
+    public void resetBoard() {
+        for (int row = 0; row < 7; row++) {
+            for (int col = 0; col < 13; col++) {
+                if (row == 5) {
+                    playerBoard[row][col] = true;
+                } else {
+                    playerBoard[row][col] = false;
+                }
+            }
+        }
+    }
+
+    /**
+     * updateBoard()
+     * 
+     * Increments a given combo and increased the peg in that column by 1
+     * 
+     * @return void
+     */
     public void updateBoard(Integer comboChosen) {
         for (int row = 0; row < 7; row++) {
             for (int col = 0; col < 13; col++) {

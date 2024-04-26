@@ -496,6 +496,9 @@ public class GUI {
                 //Check for a win when a combo is chosen
                 if (checkForWin()) {
                     playerNameTextField.setText(players.get(currentPlayerIndex).getPlayerName() + " WON!");
+
+                    resetForNextGame();
+                    updateBoardViewAfterWin();
                 }
 
                 //Checking for hot hand
@@ -505,6 +508,30 @@ public class GUI {
                 }
             }
         });
+    }
+
+    private void updateBoardViewAfterWin() {
+        Integer index = 0;
+        boolean[][] playerBoard = players.get(currentPlayerIndex).getPlayerBoard();
+
+        //Updates round count
+        roundCountTextField.setText(roundCount.toString());
+        
+        //Iterates through each button and updates based on the boolean value of the board (true = peg), (false = hole)
+        for (int row = 0; row < 7; row++) {
+            for (int col = 0; col < 13; col++) {
+                JButton hole = pegHoles.get(index++);
+
+                if (playerBoard[row][col] == false && col != 0 && row != 6) {
+                    hole.setForeground(Color.BLACK);
+                }
+    
+                //Setting the "pegs"
+                if (playerBoard[row][col] == true && col != 0) {
+                    hole.setForeground(Color.WHITE.darker().darker());
+                }
+            }
+        }
     }
 
     /**
@@ -571,8 +598,10 @@ public class GUI {
 
                 //Gotta check for a win every bank
                 if (checkForWin()) {
-                    playerNameTextField.setColumns(30);
                     playerNameTextField.setText(players.get(currentPlayerIndex).getPlayerName() + " WON!");
+
+                    resetForNextGame();
+                    updateBoardView();
                 }
 
                 //Checking for hot hand
@@ -582,6 +611,37 @@ public class GUI {
                 }
             }
         });
+    }
+
+    private void resetForNextGame() {
+        //Reset player board
+        for (Player player : players) {
+            player.resetBoard();
+        }
+
+        //Resetting the melded array
+        Arrays.fill(melded, false);
+
+        //Setting the player hand to not null
+        players.get(currentPlayerIndex).resetHand();
+
+        //Reset the combo chosen
+        comboChosen = 0;
+
+        //Reset the roll count
+        rollCount = 0;
+
+        //Reset the round count
+        roundCount = 1;
+
+        //Re-set the buttons
+        chooseComboButton.setEnabled(false);
+        rollButton.setEnabled(true);
+        endTurnButton.setEnabled(false);
+        bankButton.setEnabled(false);
+
+        //Disable all checkboxes
+        disableCheckBoxes();
     }
 
     /**
