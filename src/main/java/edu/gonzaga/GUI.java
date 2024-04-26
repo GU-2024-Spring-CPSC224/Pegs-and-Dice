@@ -15,6 +15,7 @@ package edu.gonzaga;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +34,8 @@ public class GUI {
     Integer roundCount;
     Integer comboChosen;
     Integer rollCount;
+
+    boolean[] melded = new boolean[6];
 
     //Fulfills requirements for player and round information
     JTextField playerNameTextField = new JTextField();
@@ -215,7 +218,7 @@ public class GUI {
         newPanel.setBackground(Color.GRAY.darker().darker().darker().darker());
 
         //Setting up the player name text holder
-        playerNameTextField.setColumns(10);
+        playerNameTextField.setColumns(15);
         playerNameTextField.setFont(new Font("Montserrat", Font.PLAIN, 25));
         playerNameTextField.setForeground(Color.WHITE);
         playerNameTextField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
@@ -416,9 +419,8 @@ public class GUI {
         addCheckboxListeners();
         chooseComboButtonListener();
 
-        rollButton.setEnabled(true);
-        //bankButton.setEnabled(false);
-        //endTurnButton.setEnabled(false);
+        bankButton.setEnabled(false);
+        endTurnButton.setEnabled(false);
         chooseComboButton.setEnabled(false);
         playerNameTextField.setEditable(false);
         disableCheckBoxes();
@@ -427,7 +429,7 @@ public class GUI {
     }
 
     /**
-     * rotateBoardView()
+     * updateBoardView()
      * 
      * Uses the array of JButtons setup during the genBoard execution and updates them based
      * on the data inside of the playerBoard array.
@@ -460,7 +462,13 @@ public class GUI {
         }
     }
 
-    //All these listeners are in progress
+    /**
+     * chooseComboButtonListener()
+     * 
+     * This function sets the chosen combo, and sets the game state.
+     * 
+     * @return void
+     */
     private void chooseComboButtonListener() {
         chooseComboButton.addActionListener(new ActionListener() {
             @Override
@@ -468,11 +476,60 @@ public class GUI {
                 //Setting the round's current combo
                 comboChosen = getMeldCheckBoxesSum();
 
+                //Update the player board
+                players.get(currentPlayerIndex).updateBoard(comboChosen);
+                updateBoardView();
+
+                //Unset the button
                 chooseComboButton.setEnabled(false);
+                rollCount++;
+
+                rollButton.setEnabled(true);
+                endTurnButton.setEnabled(true);
+
+                //For animation
+                removeMeldedDie();
+
+                //A player can't select the same die
+                disableUsedCheckboxes();
+
+                //Check for a win when a combo is chosen
+                if (checkForWin()) {
+                    playerNameTextField.setText(players.get(currentPlayerIndex).getPlayerName() + " WON!");
+                }
+
+                //Checking for hot hand
+                if (checkForHotHand()) {
+                    resetForNextPlayer();
+                    playerNameTextField.setText("HOT HAND");
+                }
             }
         });
     }
 
+    /**
+     * disableUsedCheckboxes()
+     * 
+     * This function disables and unselects all checkboxes
+     * 
+     * @return void
+     */
+    private void disableUsedCheckboxes() {
+        for (int i = 0; i < meldCheckboxes.size(); i++) {
+            if (meldCheckboxes.get(i).isSelected()) {
+                meldCheckboxes.get(i).setEnabled(false);
+                meldCheckboxes.get(i).setSelected(false);
+            }
+        }
+    }
+
+    /**
+     * getMeldCheckBoxesSum()
+     * 
+     * This function adds up the sum of the selected checkboxes
+     * 
+     * @return void
+     */
     private Integer getMeldCheckBoxesSum() {
         Integer meldSum = 0;
 
@@ -485,56 +542,207 @@ public class GUI {
         return meldSum;
     }
 
-    //All these listeners are in progress
+    /**
+     * bankButtonListener()
+     * 
+     * This function does it all.
+     * 
+     * @return void
+     */
     private void bankButtonListener() {
         bankButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                comboChosen = 12; //SET THIS DURING "PICK COMBO"
-                players.get(currentPlayerIndex).updateBoard(comboChosen);
-                updateBoardView();
+                if (getMeldCheckBoxesSum() == comboChosen) {
+                    players.get(currentPlayerIndex).updateBoard(comboChosen);
+                    updateBoardView();
+
+                    //Only set the roll button if the banked die are proper
+                    rollButton.setEnabled(true);
+                }
+
+                //Putting the index of the die we "melded" into an array to check for animation
+                removeMeldedDie();
+
+                //Doing this for calculation purposes (meldsum stuff)
+                disableUsedCheckboxes();
+
+                bankButton.setEnabled(false);
+
+                //Gotta check for a win every bank
+                if (checkForWin()) {
+                    playerNameTextField.setColumns(30);
+                    playerNameTextField.setText(players.get(currentPlayerIndex).getPlayerName() + " WON!");
+                }
+
+                //Checking for hot hand
+                if (checkForHotHand()) {
+                    resetForNextPlayer();
+                    playerNameTextField.setText("HOT HAND");
+                }
             }
         });
     }
 
-    //All these listeners are in progress
+    /**
+     * checkForHotHand()
+     * 
+     * This function checks for if the top row and the combo chosen column are topped out
+     * 
+     * @return void
+     */
+    private boolean checkForHotHand() {
+        boolean isHotHand = false;
+        boolean[][] playerBoard = players.get(currentPlayerIndex).getPlayerBoard();
+
+        //If the column is already at the top row you can't hot hand
+        if (alreadyDone()) {
+            return isHotHand;
+        }
+
+        for (int col = 0; col < 13; col++) {
+            if (playerBoard[0][comboChosen]) {
+                //If the top row and the column of the chosen combo is true it's a hot hand
+                isHotHand = true;
+
+                break;
+            }
+        }
+
+        return isHotHand;
+    }
+
+    /**
+     * alreadyDone()
+     * 
+     * This function makes sure that it won't give hot hand status if it's maxed out
+     * 
+     * @return void
+     */
+    private boolean alreadyDone() {
+        boolean alreadyChosen = false;
+        boolean[][] playerBoard = players.get(currentPlayerIndex).getPlayerBoard();
+
+        for (int col = 0; col < 13; col++) {
+            if (playerBoard[0][comboChosen]) {
+                alreadyChosen = true;
+
+                break;
+            }
+        }
+
+        return alreadyChosen;
+    }
+
+    /**
+     * endTurnButtonListener()
+     * 
+     * This function switches the player, resets the game state, unchecks the checkboxes, and updates the game view
+     * 
+     * @return void
+     */
     private void endTurnButtonListener() {
         endTurnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Reset the roll count
-                rollCount = 0;
+                //Switches player index
+                switchPlayer();
 
-                //Code to switch player index
-                if (currentPlayerIndex == numPlayers - 1) {
-                    //If the current index equals the amount of players - 1 (offset) we need to decrement the index back to 0
-                    currentPlayerIndex -= numPlayers - 1;
-                    //This also implies that the round has gone through a full rotation
-                    roundCount++;
-                } else {
-                    currentPlayerIndex++;
-                }
+                //Resets the game state
+                resetForNextPlayer();
 
-                //CALL A TECHNICAL UPDATE BOARD FUNCTION HERE (SET THE 2D ARRAY VALUES)
+                //Unchecks boxes
+                uncheckCheckboxes();
 
-                //Updates the board, player name, and round count VIEW
+                //Updates the board view to the next player's
                 updateBoardView();
             }
         });
     }
 
-    //All these listeners are in progress
+    /**
+     * uncheckCheckboxes()
+     * 
+     * This function un selects all the checkboxes
+     * 
+     * @return void
+     */
+    private void uncheckCheckboxes() {
+        for (JCheckBox checkBox : meldCheckboxes) {
+            checkBox.setSelected(false);
+        }
+    }
+
+    /**
+     * switchPlayer()
+     * 
+     * This code acts as a way to shift players.
+     * 
+     * @return void
+     */
+    private void switchPlayer() {
+        if (currentPlayerIndex == numPlayers - 1) {
+            //If the current index equals the amount of players - 1 (offset) we need to decrement the index back to 0
+            currentPlayerIndex = 0;
+            //This also implies that the round has gone through a full rotation
+            roundCount++;
+        } else {
+            currentPlayerIndex++;
+        }
+    }
+
+    /**
+     * resetForNextPlayer()
+     * 
+     * Fills the melded array with all false to indicate a reset hand.
+     * Fills the player hand with anything not null.
+     * Resets the comboChosen variable and the roll count.
+     * Sets the button based on the current state.
+     * 
+     * @return void
+     */
+    private void resetForNextPlayer() {
+        //Resetting the melded array
+        Arrays.fill(melded, false);
+
+        //Setting the player hand to not null
+        players.get(currentPlayerIndex).resetHand();
+
+        //Reset the combo chosen
+        comboChosen = 0;
+
+        //Reset the roll count
+        rollCount = 0;
+
+        //Re-set the buttons
+        chooseComboButton.setEnabled(false);
+        rollButton.setEnabled(true);
+        endTurnButton.setEnabled(false);
+        bankButton.setEnabled(false);
+
+        //Disable all checkboxes
+        disableCheckBoxes();
+    }
+
+    /**
+     * addCheckboxListeners()
+     * 
+     * This function controls the checkboxes.
+     * It changes the games state depending on the roll count or combo chosen.
+     * 
+     * @return void
+     */
     private void addCheckboxListeners() {
         for (int i = 0; i < meldCheckboxes.size(); i++) {
-            //Allows you to check for individual checkboxes (meldCheckBoxes.get(index))
-            Integer index = i;
-
             meldCheckboxes.get(i).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (checkForProperCombo() && rollCount == 1) {
+                    Integer meldSum = getMeldCheckBoxesSum();
+                    boolean isProper = checkForProperCombo();
+
+                    if (isProper && rollCount == 1) {
                         chooseComboButton.setEnabled(true);
-                    } else if (checkForProperCombo() && rollCount != 1) {
+                    } else if (isProper && rollCount != 1 && meldSum == comboChosen) {
                         bankButton.setEnabled(true);
                     } else {
                         bankButton.setEnabled(false);
@@ -545,7 +753,33 @@ public class GUI {
         }
     }
 
-    //Not finished
+    /**
+     * removeMeldedDie()
+     * 
+     * Removes melded dice from the player's hand based on selected checkboxes.
+     * Updates the melded array and unchecks all checkboxes.
+     * 
+     * @return void
+     */
+    private void removeMeldedDie() {
+        for (int i = 0; i < meldCheckboxes.size(); i++) {
+            if (meldCheckboxes.get(i).isSelected()) {
+                players.get(currentPlayerIndex).removeFromHand(i);
+                
+                melded[i] = true;
+            }
+        }
+    }
+
+    /**
+     * checkForProperCombo()
+     * 
+     * This function checks for a proper combo.
+     * A proper combo is when only 2 die maximum are selected, and if those two die combo into a integer
+     * greater than or equal to 7. 
+     * 
+     * @return void
+     */
     private boolean checkForProperCombo() {
         Integer checkBoxCount = 0;
         boolean isBankable = false;
@@ -568,6 +802,14 @@ public class GUI {
         return isBankable;
     }
     
+    /**
+     * rollButtonListener()
+     * 
+     * This function rolls the players current hand, runs and animation function, and then enables checkboxes and updates
+     * certain buttons so that the game state is in order.
+     * 
+     * @return void
+     */
     private void rollButtonListener() {
         rollButton.addActionListener(new ActionListener() {
             @Override
@@ -582,12 +824,18 @@ public class GUI {
                     @Override
                     public void actionPerformed(ActionEvent e2) {
                         //Allows a player to pick which die they want to try and combo
-                        enableCheckBoxes();
-
+                        if (rollCount == 0) {
+                            enableCheckBoxes();
+                        }
+                    
                         //A player can't re-roll before they've selected a combo
                         rollButton.setEnabled(false);
+                        
                         //Update the roll counter
                         rollCount++;
+                        
+                        //Should be able to skip turn after rolling
+                        endTurnButton.setEnabled(true);
                     }
                 });
 
@@ -600,39 +848,43 @@ public class GUI {
     /**
      * animateRoll()
      * 
-     * Uses a JTimer to imply a rolling motion when the roll button is pressed.
-     * Sets the final version of the dice images to the player hand.
+     * First this function updates the player's hand which practically rolls all the dice.
+     * Then the function fakes a little animation, and once the timer runs out the final dice view
+     * is set to the player's hand. It will not animate die that are in the melded[] array, as this 
+     * means that they have already been used once this turn.
      * 
      * @return void
      */
     private void animateRoll() {
         for (int i = 0; i < diceButtons.size(); i++) {
-            int index = i;
+            if (!melded[i]) {
+                int index = i;
 
-            Timer delayTimer = new Timer(10, new ActionListener() {
-                int rollCount = 0;
+                Timer delayTimer = new Timer(10, new ActionListener() {
+                    int rollCount = 0;
 
-                @Override
-                public void actionPerformed(ActionEvent e2) {
-                    Timer rollingTimer = new Timer(100, new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            diceButtons.get(index).setIcon(diceImages.getDieImage(setRandomDie()));
-                            rollCount++;
+                    @Override
+                    public void actionPerformed(ActionEvent e2) {
+                        Timer rollingTimer = new Timer(100, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                diceButtons.get(index).setIcon(diceImages.getDieImage(setRandomDie()));
+                                rollCount++;
 
-                            if (rollCount >= 15) {
-                                ((Timer) e.getSource()).stop();
-                                
-                                diceButtons.get(index).setIcon(diceImages.getDieImage(players.get(currentPlayerIndex).getPlayerHand()[index].getSideUp()));
+                                if (rollCount >= 15) {
+                                    ((Timer) e.getSource()).stop();
+                                    
+                                    diceButtons.get(index).setIcon(diceImages.getDieImage(players.get(currentPlayerIndex).getPlayerHand()[index].getSideUp()));
+                                }
                             }
-                        }
-                    });
-                    rollingTimer.start();
-                }
-            });
+                        });
+                        rollingTimer.start();
+                    }
+                });
 
-            delayTimer.setRepeats(false);
-            delayTimer.start();
+                delayTimer.setRepeats(false);
+                delayTimer.start();
+            }
         }
     }
 
