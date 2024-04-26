@@ -13,6 +13,8 @@
 
 package edu.gonzaga;
 
+import java.util.Random;
+
 public class Player {
     //We need a name, hand, and board for each player
     private String playerName;
@@ -150,6 +152,14 @@ public class Player {
         }
 
         return dice;
+    }
+
+    public void resetHand() {
+        Random random = new Random();
+
+        for (int i = 0; i < playerHand.length; i++) {
+            playerHand[i] = new Die(6, random.nextInt(6) + 1);
+        }
     }
 
     /**
