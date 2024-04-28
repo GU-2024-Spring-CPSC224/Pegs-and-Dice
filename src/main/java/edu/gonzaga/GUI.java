@@ -877,6 +877,8 @@ public class GUI {
                 Player player = players.get(currentPlayerIndex);
 
                 player.updatePlayerHand();
+
+                endTurnButton.setEnabled(false);
                 
                 animateRoll();
 
@@ -890,6 +892,9 @@ public class GUI {
                     
                         //A player can't re-roll before they've selected a combo
                         rollButton.setEnabled(false);
+                        
+                        //Can't end turn during roll
+                        endTurnButton.setEnabled(true);
                         
                         //Update the roll counter
                         rollCount++;
